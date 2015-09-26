@@ -6,16 +6,21 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 public class DramacoolcomEpisodePageScraper extends EpisodePageScraper {
-  @Override
-  public EpisodeScrapeResult scrape(String url) throws IOException {
-    EpisodeScrapeResult result = new EpisodeScrapeResult();
+  private static Set<String> DOMAINS;
 
-    if(!isSupported(url)) {
-      result.setStatus(EpisodeScrapeResult.Status.UNSUPPORTED);
-      return result;
-    }
+  static {
+    DOMAINS = new HashSet<>();
+    DOMAINS.add("dramacool.com");
+    DOMAINS.add("www.dramacool.com");
+  }
+
+  @Override
+  protected EpisodeScrapeResult scrapeInternal(String url) throws IOException {
+    EpisodeScrapeResult result = new EpisodeScrapeResult();
 
     Document doc = getDocument(url);
     Elements anchors = doc.select(".detail-ep-film .nav a");
@@ -65,6 +70,7 @@ public class DramacoolcomEpisodePageScraper extends EpisodePageScraper {
 
   @Override
   public boolean isSupported(String url) {
-    return true;
+    String hostname = getHostname(url);
+    return DOMAINS.contains(hostname);
   }
 }

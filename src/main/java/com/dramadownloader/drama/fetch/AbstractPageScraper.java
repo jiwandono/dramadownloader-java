@@ -4,6 +4,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -67,5 +69,16 @@ public abstract class AbstractPageScraper<T> implements PageScraper<T> {
         .get();
 
     return doc;
+  }
+
+  protected String getHostname(String urlString) {
+    try {
+      URL url = new URL(urlString);
+      return url.getHost().toLowerCase();
+    } catch (MalformedURLException e) {
+      // no-op
+    }
+
+    return null;
   }
 }

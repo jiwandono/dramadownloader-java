@@ -6,15 +6,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class EpisodePageScraperFactory implements PageScraperFactory<EpisodePageScraper> {
-  private final Set<EpisodePageScraper> episodePageScrapers;
+  private final Set<EpisodePageScraper> scrapers;
 
   public EpisodePageScraperFactory() {
-    episodePageScrapers = new HashSet<>();
+    scrapers = new HashSet<>();
   }
 
   @Override
   public EpisodePageScraper getPageScraper(String url) {
-    for(EpisodePageScraper scraper : episodePageScrapers)
+    for(EpisodePageScraper scraper : scrapers)
       if(scraper.isSupported(url))
         return scraper;
 
@@ -22,6 +22,6 @@ public class EpisodePageScraperFactory implements PageScraperFactory<EpisodePage
   }
 
   public void registerPageScraper(EpisodePageScraper scraper) {
-    episodePageScrapers.add(scraper);
+    scrapers.add(scraper);
   }
 }

@@ -7,6 +7,14 @@ public class EpisodeScrapeResult {
   private Status status;
   private List<Stream> streams = new ArrayList<>();
 
+  public EpisodeScrapeResult() {
+
+  }
+
+  public EpisodeScrapeResult(Status status) {
+    this.status = status;
+  }
+
   public Status getStatus() {
     return status;
   }
