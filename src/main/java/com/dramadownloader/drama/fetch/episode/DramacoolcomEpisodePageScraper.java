@@ -1,18 +1,70 @@
 package com.dramadownloader.drama.fetch.episode;
 
+import org.jsoup.nodes.DataNode;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.IOException;
 
 public class DramacoolcomEpisodePageScraper extends EpisodePageScraper {
   @Override
   public EpisodeScrapeResult scrape(String url) throws IOException {
-    Document document = getDocument("asdF");
-    return null;  // TODO impl
+    EpisodeScrapeResult result = new EpisodeScrapeResult();
+
+    if(!isSupported(url)) {
+      result.setStatus(EpisodeScrapeResult.Status.UNSUPPORTED);
+      return result;
+    }
+
+    Document doc = getDocument(url);
+    Elements anchors = doc.select(".detail-ep-film .nav a");
+
+    for(Element a : anchors) {
+      String target = a.attr("href"); // Points to video container eg. #servercool, #server1, etc.
+      Element targetEl = doc.select(target).first();
+
+      String name = a.text();
+      String streamUrl = null;
+
+      // Look for something with url.
+      Elements candidates = new Elements();
+      candidates.addAll(targetEl.select("iframe[src]"));
+      candidates.addAll(targetEl.select("video source[src]"));
+      if(!candidates.isEmpty()) {
+        streamUrl = candidates.first().attr("src");
+      } else {
+        // Most probably using jwplayer. Look in the script tag.
+        Elements scripts = targetEl.getElementsByTag("script");
+        for(Element script : scripts) {
+          for(DataNode dataNode : script.dataNodes()) {
+            String actualScript = dataNode.getWholeData();
+            if(actualScript.contains(target)) {
+              // Split the script by whitespaces, look for source url.
+              String[] tokens = actualScript.split(" ");
+              for(String token : tokens) {
+                if(token.startsWith("src=")) {
+                  streamUrl = token.substring(5, token.length() - 1);
+                }
+              }
+            }
+          }
+        }
+      }
+
+      if(streamUrl != null) {
+        result.setStatus(EpisodeScrapeResult.Status.OK);
+        result.getStreams().add(new EpisodeScrapeResult.Stream(name, streamUrl));
+      } else {
+        result.setStatus(EpisodeScrapeResult.Status.FAILED);
+      }
+    }
+
+    return result;
   }
 
   @Override
   public boolean isSupported(String url) {
-    return false;  // TODO impl
+    return true;
   }
 }
