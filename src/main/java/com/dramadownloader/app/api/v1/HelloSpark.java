@@ -13,8 +13,12 @@ import com.dramadownloader.drama.fetch.hosting.VideouploadusHostingPageScraper;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.spy.memcached.AddrUtil;
+import net.spy.memcached.BinaryConnectionFactory;
+import net.spy.memcached.MemcachedClient;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -31,13 +35,15 @@ public class HelloSpark {
   private static final EpisodePageScraperFactory EPISODE_PAGE_SCRAPER_FACTORY = new EpisodePageScraperFactory();
   private static final HostingPageScraperFactory HOSTING_PAGE_SCRAPER_FACTORY = new HostingPageScraperFactory();
 
-  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
-      .setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE)
-      .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+  private static MemcachedClient MEMCACHED_CLIENT;
 
   public static void main(String[] args) {
     initEpisodePageScraperFactory();
     initHostingPageScraperFactory();
+    initObjectMapper();
+    initMemcachedClient();
 
     helloWorld();
     fetchStreams();
@@ -49,27 +55,40 @@ public class HelloSpark {
 
   public static void fetchStreams() {
     post("/v1/drama/fetchstreams", (request, response) -> {
+      response.type("application/json");
+      response.header("Access-Control-Allow-Origin", "*");
+      response.header("Vary", "Origin");
+
       FetchStreamsRequest apiRequest = OBJECT_MAPPER.readValue(request.body(), FetchStreamsRequest.class);
       FetchStreamsResponse apiResponse = new FetchStreamsResponse();
 
-      EpisodePageScraper episodePageScraper = EPISODE_PAGE_SCRAPER_FACTORY.getPageScraper(apiRequest.getUrl());
-      if(episodePageScraper == null) {
+      String episodeUrl = apiRequest.getUrl();
+
+      // Check cache
+      Object cachedObject = MEMCACHED_CLIENT.get("fetchstreams_" + episodeUrl);
+      if(cachedObject != null) {
+        LOGGER.info("Found cached response for " + episodeUrl);
+        FetchStreamsResponse cachedApiResponse = OBJECT_MAPPER.readValue((String) cachedObject, FetchStreamsResponse.class);
+        return OBJECT_MAPPER.writeValueAsString(cachedApiResponse);
+      }
+
+      EpisodePageScraper episodePageScraper = EPISODE_PAGE_SCRAPER_FACTORY.getPageScraper(episodeUrl);
+      if (episodePageScraper == null) {
         apiResponse.setStatus(FetchStreamsResponse.Status.UNSUPPORTED);
         return OBJECT_MAPPER.writeValueAsString(apiResponse);
       }
 
-      String episodeUrl = apiRequest.getUrl();
       EpisodeScrapeResult episodeScrapeResult = episodePageScraper.scrape(episodeUrl);
       LOGGER.info("URL " + episodeUrl + " processed with status " + episodeScrapeResult.getStatus());
 
       CountDownLatch countDownLatch = new CountDownLatch(episodeScrapeResult.getStreams().size());
-      for(EpisodeScrapeResult.Stream stream : episodeScrapeResult.getStreams()) {
+      for (EpisodeScrapeResult.Stream stream : episodeScrapeResult.getStreams()) {
         final String streamName = stream.getStreamName();
         final String streamUrl = stream.getStreamUrl();
         LOGGER.info("Processing stream " + streamName + " - " + stream.getStreamUrl());
 
         final HostingPageScraper hostingPageScraper = HOSTING_PAGE_SCRAPER_FACTORY.getPageScraper(streamUrl);
-        if(hostingPageScraper == null) {
+        if (hostingPageScraper == null) {
           countDownLatch.countDown();
           continue;
         }
@@ -93,10 +112,15 @@ public class HelloSpark {
       }
       countDownLatch.await(FETCH_TIMEOUT_MSEC, TimeUnit.MILLISECONDS);
 
-      if(apiResponse.getLinks().size() > 0) {
+      if (apiResponse.getLinks().size() > 0) {
         apiResponse.setStatus(FetchStreamsResponse.Status.OK);
       } else {
         apiResponse.setStatus(FetchStreamsResponse.Status.FAILED);
+      }
+
+      // Cache result
+      if(apiResponse.getStatus().equals(FetchStreamsResponse.Status.OK)) {
+        MEMCACHED_CLIENT.set("fetchstreams_" + episodeUrl, 3600, OBJECT_MAPPER.writeValueAsString(apiResponse));
       }
 
       return OBJECT_MAPPER.writeValueAsString(apiResponse);
@@ -116,5 +140,22 @@ public class HelloSpark {
     HOSTING_PAGE_SCRAPER_FACTORY.registerScraper(embeddramaHostingPageScraper);
     HOSTING_PAGE_SCRAPER_FACTORY.registerScraper(mp4uploadHostingPageScraper);
     HOSTING_PAGE_SCRAPER_FACTORY.registerScraper(videouploadusHostingPageScraper);
+  }
+
+  private static void initObjectMapper() {
+    OBJECT_MAPPER
+        .setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE)
+        .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+  }
+
+  private static void initMemcachedClient() {
+    try {
+      MEMCACHED_CLIENT = new MemcachedClient(
+          new BinaryConnectionFactory(),
+          AddrUtil.getAddresses("localhost:11211")
+      );
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 }
