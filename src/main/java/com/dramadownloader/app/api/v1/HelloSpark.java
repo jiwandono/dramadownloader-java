@@ -4,11 +4,13 @@ import com.dramadownloader.app.api.v1.monitor.LegacyMongoMonitor;
 import com.dramadownloader.app.api.v1.monitor.LegacyMonitor;
 import com.dramadownloader.drama.fetch.episode.DramacoolcomEpisodePageScraper;
 import com.dramadownloader.drama.fetch.episode.DramafirecomEpisodePageScraper;
+import com.dramadownloader.drama.fetch.episode.DramatvEpisodePageScraper;
 import com.dramadownloader.drama.fetch.episode.EpisodePageScraper;
 import com.dramadownloader.drama.fetch.episode.EpisodePageScraperFactory;
 import com.dramadownloader.drama.fetch.episode.EpisodeScrapeResult;
 import com.dramadownloader.drama.fetch.hosting.DramauploadHostingPageScraper;
 import com.dramadownloader.drama.fetch.hosting.EmbeddramaHostingPageScraper;
+import com.dramadownloader.drama.fetch.hosting.GooglevideoHostingPageScraper;
 import com.dramadownloader.drama.fetch.hosting.HostingPageScraper;
 import com.dramadownloader.drama.fetch.hosting.HostingPageScraperFactory;
 import com.dramadownloader.drama.fetch.hosting.HostingScrapeResult;
@@ -210,20 +212,24 @@ public class HelloSpark {
   private static void initEpisodePageScraperFactory() {
     DramacoolcomEpisodePageScraper dramacoolcomEpisodePageScraper = new DramacoolcomEpisodePageScraper();
     DramafirecomEpisodePageScraper dramafirecomEpisodePageScraper = new DramafirecomEpisodePageScraper();
+    DramatvEpisodePageScraper dramatvEpisodePageScraper = new DramatvEpisodePageScraper();
 
     EPISODE_PAGE_SCRAPER_FACTORY.registerPageScraper(dramacoolcomEpisodePageScraper);
     EPISODE_PAGE_SCRAPER_FACTORY.registerPageScraper(dramafirecomEpisodePageScraper);
+    EPISODE_PAGE_SCRAPER_FACTORY.registerPageScraper(dramatvEpisodePageScraper);
   }
 
   private static void initHostingPageScraperFactory() {
     DramauploadHostingPageScraper dramauploadHostingPageScraper = new DramauploadHostingPageScraper();
     EmbeddramaHostingPageScraper embeddramaHostingPageScraper = new EmbeddramaHostingPageScraper();
+    GooglevideoHostingPageScraper googlevideoHostingPageScraper = new GooglevideoHostingPageScraper();
     Mp4uploadHostingPageScraper mp4uploadHostingPageScraper = new Mp4uploadHostingPageScraper();
     StoragestreamingHostingPageScraper storagestreamingHostingPageScraper = new StoragestreamingHostingPageScraper();
     VideouploadusHostingPageScraper videouploadusHostingPageScraper = new VideouploadusHostingPageScraper();
 
     HOSTING_PAGE_SCRAPER_FACTORY.registerScraper(dramauploadHostingPageScraper);
     HOSTING_PAGE_SCRAPER_FACTORY.registerScraper(embeddramaHostingPageScraper);
+    HOSTING_PAGE_SCRAPER_FACTORY.registerScraper(googlevideoHostingPageScraper);
     HOSTING_PAGE_SCRAPER_FACTORY.registerScraper(mp4uploadHostingPageScraper);
     HOSTING_PAGE_SCRAPER_FACTORY.registerScraper(storagestreamingHostingPageScraper);
     HOSTING_PAGE_SCRAPER_FACTORY.registerScraper(videouploadusHostingPageScraper);

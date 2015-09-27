@@ -1,6 +1,6 @@
 package com.dramadownloader.drama.fetch.episode;
 
-import org.jsoup.nodes.DataNode;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -9,13 +9,15 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-public class DramafirecomEpisodePageScraper extends EpisodePageScraper {
+public class DramatvEpisodePageScraper extends EpisodePageScraper {
   private static Set<String> DOMAINS;
 
   static {
     DOMAINS = new HashSet<>();
-    DOMAINS.add("dramafire.com");
-    DOMAINS.add("www.dramafire.com");
+    DOMAINS.add("dramatv.tv");
+    DOMAINS.add("www.dramatv.tv");
+    DOMAINS.add("dramatv.co");
+    DOMAINS.add("www.dramatv.co");
   }
 
   @Override
@@ -24,8 +26,8 @@ public class DramafirecomEpisodePageScraper extends EpisodePageScraper {
 
     Document doc = getDocument(url);
     Elements candidates = new Elements();
-    candidates.addAll(doc.select("#main-content .post iframe[src]"));
-    candidates.addAll(doc.select("#main-content .post video source[src]"));
+    candidates.addAll(doc.select(".movie-detail iframe[src]"));
+    candidates.addAll(doc.select(".movie-detail video source[src]"));
 
     int i = 1;
     for(Element candidate : candidates) {
@@ -35,17 +37,12 @@ public class DramafirecomEpisodePageScraper extends EpisodePageScraper {
       result.getStreams().add(new EpisodeScrapeResult.Stream(name, streamUrl));
     }
 
-    Elements scripts = doc.getElementsByTag("script");
-    for(Element script : scripts) {
-      for(DataNode dataNode : script.dataNodes()) {
-        String actualScript = dataNode.getWholeData();
-        String nospaces = actualScript.replace(" ", "");
-        int pos1 = nospaces.indexOf("file:");
-        int pos2 = nospaces.indexOf("'", pos1 + 6);
-        if(pos1 != -1 && pos2 != -1 && pos2 > pos1) {
-          String fileUrl = nospaces.substring(pos1 + 6, pos2);
-          result.getStreams().add(new EpisodeScrapeResult.Stream("Server " + i++, fileUrl));
-        }
+    Elements paragraphs = doc.select(".movie-detail p[data-content]");
+    for(Element p : paragraphs) {
+      Document inline = Jsoup.parse(p.attr("data-content"));
+      String src = inline.select("[src]").attr("src");
+      if(!src.isEmpty()) {
+        result.getStreams().add(new EpisodeScrapeResult.Stream("Server " + i++, src));
       }
     }
 
