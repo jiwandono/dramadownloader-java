@@ -67,8 +67,6 @@ public class DramacoolcomEpisodePageScraper extends EpisodePageScraper {
       if(streamUrl != null) {
         result.setStatus(EpisodeScrapeResult.Status.OK);
         result.getStreams().add(new EpisodeScrapeResult.Stream(name, streamUrl));
-      } else {
-        result.setStatus(EpisodeScrapeResult.Status.FAILED);
       }
     }
 
