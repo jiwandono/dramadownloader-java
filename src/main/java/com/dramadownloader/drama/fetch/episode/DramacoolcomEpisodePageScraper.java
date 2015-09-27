@@ -20,7 +20,7 @@ public class DramacoolcomEpisodePageScraper extends EpisodePageScraper {
 
   @Override
   protected EpisodeScrapeResult scrapeInternal(String url) throws IOException {
-    EpisodeScrapeResult result = new EpisodeScrapeResult();
+    EpisodeScrapeResult result = new EpisodeScrapeResult(EpisodeScrapeResult.Status.FAILED);
 
     Document doc = getDocument(url);
     Elements anchors = doc.select(".detail-ep-film .nav a");
