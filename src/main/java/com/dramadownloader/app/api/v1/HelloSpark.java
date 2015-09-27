@@ -1,5 +1,7 @@
 package com.dramadownloader.app.api.v1;
 
+import com.dramadownloader.app.api.v1.monitor.LegacyMongoMonitor;
+import com.dramadownloader.app.api.v1.monitor.LegacyMonitor;
 import com.dramadownloader.drama.fetch.episode.DramacoolcomEpisodePageScraper;
 import com.dramadownloader.drama.fetch.episode.EpisodePageScraper;
 import com.dramadownloader.drama.fetch.episode.EpisodePageScraperFactory;
@@ -13,10 +15,13 @@ import com.dramadownloader.drama.fetch.hosting.VideouploadusHostingPageScraper;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.DB;
+import com.mongodb.MongoClient;
 import net.spy.memcached.AddrUtil;
 import net.spy.memcached.BinaryConnectionFactory;
 import net.spy.memcached.MemcachedClient;
 import org.apache.log4j.Logger;
+import org.mongodb.morphia.Morphia;
 
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
@@ -37,6 +42,12 @@ public class HelloSpark {
 
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
+  private static final MongoClient MONGO_CLIENT = new MongoClient( "localhost" );
+  private static final DB DB_MONITOR = MONGO_CLIENT.getDB("dramadownloader-monitor");
+  private static final Morphia MORPHIA = new Morphia();
+
+  private static final LegacyMonitor LEGACY_MONITOR = new LegacyMongoMonitor(DB_MONITOR, MORPHIA);
+
   private static MemcachedClient MEMCACHED_CLIENT;
 
   public static void main(String[] args) {
@@ -47,6 +58,7 @@ public class HelloSpark {
 
     helloWorld();
     fetchStreams();
+    stats();
   }
 
   public static void helloWorld() {
@@ -66,15 +78,17 @@ public class HelloSpark {
 
       // Check cache
       Object cachedObject = MEMCACHED_CLIENT.get("fetchstreams_" + episodeUrl);
-      if(cachedObject != null) {
+      if (cachedObject != null) {
         LOGGER.info("Found cached response for " + episodeUrl);
         FetchStreamsResponse cachedApiResponse = OBJECT_MAPPER.readValue((String) cachedObject, FetchStreamsResponse.class);
+        LEGACY_MONITOR.onRequestProcessed(episodeUrl, System.currentTimeMillis(), cachedApiResponse.getStatus().equals(FetchStreamsResponse.Status.OK));
         return OBJECT_MAPPER.writeValueAsString(cachedApiResponse);
       }
 
       EpisodePageScraper episodePageScraper = EPISODE_PAGE_SCRAPER_FACTORY.getPageScraper(episodeUrl);
       if (episodePageScraper == null) {
         apiResponse.setStatus(FetchStreamsResponse.Status.UNSUPPORTED);
+        LEGACY_MONITOR.onRequestProcessed(episodeUrl, System.currentTimeMillis(), apiResponse.getStatus().equals(FetchStreamsResponse.Status.OK));
         return OBJECT_MAPPER.writeValueAsString(apiResponse);
       }
 
@@ -119,13 +133,28 @@ public class HelloSpark {
       }
 
       // Cache result
-      if(apiResponse.getStatus().equals(FetchStreamsResponse.Status.OK)) {
+      if (apiResponse.getStatus().equals(FetchStreamsResponse.Status.OK)) {
         MEMCACHED_CLIENT.set("fetchstreams_" + episodeUrl, 3600, OBJECT_MAPPER.writeValueAsString(apiResponse));
       }
+
+      LEGACY_MONITOR.onRequestProcessed(episodeUrl, System.currentTimeMillis(), apiResponse.getStatus().equals(FetchStreamsResponse.Status.OK));
 
       return OBJECT_MAPPER.writeValueAsString(apiResponse);
     });
   }
+
+  private static void stats() {
+    get("/v1/monitor/stats", (request, response) -> {
+      response.type("application/json");
+      response.header("Access-Control-Allow-Origin", "*");
+      response.header("Vary", "Origin");
+
+      long minTimestamp = System.currentTimeMillis() - 3600_000L;
+      return OBJECT_MAPPER.writeValueAsString(LEGACY_MONITOR.getEntries(minTimestamp));
+    });
+  }
+
+  // ==========
 
   private static void initEpisodePageScraperFactory() {
     DramacoolcomEpisodePageScraper dramacoolcomEpisodePageScraper = new DramacoolcomEpisodePageScraper();

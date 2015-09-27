@@ -20,6 +20,8 @@ dependencies {
   compile 'log4j:log4j:1.2.17'
   compile 'net.spy:spymemcached:2.12.0'
   compile 'org.apache.httpcomponents:httpclient:4.5'
+  compile 'org.mongodb:mongo-java-driver:3.0.4'
+  compile 'org.mongodb.morphia:morphia:1.0.1'
   compile 'org.jsoup:jsoup:1.8.3'
 
   testCompile 'junit:junit:4.+'
