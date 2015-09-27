@@ -2,6 +2,7 @@ package com.dramadownloader.app.api.v1;
 
 import com.dramadownloader.app.api.v1.monitor.LegacyMongoMonitor;
 import com.dramadownloader.app.api.v1.monitor.LegacyMonitor;
+import com.dramadownloader.drama.fetch.episode.AnimestvEpisodePageScraper;
 import com.dramadownloader.drama.fetch.episode.DramacoolcomEpisodePageScraper;
 import com.dramadownloader.drama.fetch.episode.DramafirecomEpisodePageScraper;
 import com.dramadownloader.drama.fetch.episode.DramatvEpisodePageScraper;
@@ -210,10 +211,12 @@ public class HelloSpark {
   // ==========
 
   private static void initEpisodePageScraperFactory() {
+    AnimestvEpisodePageScraper animestvEpisodePageScraper = new AnimestvEpisodePageScraper();
     DramacoolcomEpisodePageScraper dramacoolcomEpisodePageScraper = new DramacoolcomEpisodePageScraper();
     DramafirecomEpisodePageScraper dramafirecomEpisodePageScraper = new DramafirecomEpisodePageScraper();
     DramatvEpisodePageScraper dramatvEpisodePageScraper = new DramatvEpisodePageScraper();
 
+    EPISODE_PAGE_SCRAPER_FACTORY.registerPageScraper(animestvEpisodePageScraper);
     EPISODE_PAGE_SCRAPER_FACTORY.registerPageScraper(dramacoolcomEpisodePageScraper);
     EPISODE_PAGE_SCRAPER_FACTORY.registerPageScraper(dramafirecomEpisodePageScraper);
     EPISODE_PAGE_SCRAPER_FACTORY.registerPageScraper(dramatvEpisodePageScraper);
