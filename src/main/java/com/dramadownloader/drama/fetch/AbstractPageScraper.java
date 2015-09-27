@@ -1,7 +1,10 @@
 package com.dramadownloader.drama.fetch;
 
+import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.parser.Tag;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -11,6 +14,8 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class AbstractPageScraper<T> implements PageScraper<T> {
+  private static final Logger log = Logger.getLogger(AbstractPageScraper.class);
+
   private static final int CONNECTION_TIMEOUT_MSEC = 15000;
   private static final List<String> USER_AGENTS;
 
@@ -63,7 +68,11 @@ public abstract class AbstractPageScraper<T> implements PageScraper<T> {
   }
 
   protected Document getDocument(String url) throws IOException {
-    Document doc = Jsoup.connect(url)
+    URL urlObject = createUrl(url);
+    if(urlObject == null)
+      return new Document("");
+
+    Document doc = Jsoup.connect(urlObject.toString())
         .userAgent(getRandomUserAgent())
         .timeout(CONNECTION_TIMEOUT_MSEC)
         .get();
@@ -72,11 +81,22 @@ public abstract class AbstractPageScraper<T> implements PageScraper<T> {
   }
 
   protected String getHostname(String urlString) {
-    try {
-      URL url = new URL(urlString);
+    URL url = createUrl(urlString);
+    if(url != null)
       return url.getHost().toLowerCase();
+
+    return null;
+  }
+
+  protected URL createUrl(String urlString) {
+    try {
+      return new URL(urlString);
     } catch (MalformedURLException e) {
-      // no-op
+      if(e.getMessage().contains("no protocol")) {
+        return createUrl("http://" + urlString);
+      } else {
+        log.warn("Unable to create URL: " + e.getMessage());
+      }
     }
 
     return null;
