@@ -1,5 +1,6 @@
 package com.dramadownloader.drama.fetch.episode;
 
+import org.apache.log4j.Logger;
 import org.jsoup.nodes.DataNode;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -10,6 +11,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class DramacoolcomEpisodePageScraper extends EpisodePageScraper {
+  private static final Logger log = Logger.getLogger(DramacoolcomEpisodePageScraper.class);
+
   private static Set<String> DOMAINS;
 
   static {
@@ -49,7 +52,11 @@ public class DramacoolcomEpisodePageScraper extends EpisodePageScraper {
               String[] tokens = actualScript.split(" ");
               for(String token : tokens) {
                 if(token.startsWith("src=")) {
-                  streamUrl = token.substring(5, token.length() - 1);
+                  try {
+                    streamUrl = token.substring(5, token.length() - 1);
+                  } catch (Exception e) {
+                    log.error("Caught exception while parsing " + token, e);
+                  }
                 }
               }
             }
