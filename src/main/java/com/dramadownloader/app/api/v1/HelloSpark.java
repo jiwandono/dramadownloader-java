@@ -20,10 +20,14 @@ import com.mongodb.MongoClient;
 import net.spy.memcached.AddrUtil;
 import net.spy.memcached.BinaryConnectionFactory;
 import net.spy.memcached.MemcachedClient;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 import org.mongodb.morphia.Morphia;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -59,6 +63,7 @@ public class HelloSpark {
     helloWorld();
     fetchStreams();
     stats();
+    passthru();
   }
 
   public static void helloWorld() {
@@ -151,6 +156,30 @@ public class HelloSpark {
 
       long minTimestamp = System.currentTimeMillis() - 3600_000L;
       return OBJECT_MAPPER.writeValueAsString(LEGACY_MONITOR.getEntries(minTimestamp));
+    });
+  }
+
+  private static void passthru() {
+    get("/passthru/:data", (request, response) -> {
+      String data = request.params(":data");
+      String targetUrl = new String(Base64.decodeBase64(data));
+      URL url = new URL(targetUrl);
+      String[] pathParts = url.getPath().split("/");
+      String filename = pathParts[pathParts.length -1];
+
+      response.type("application/octet-stream");
+      response.header("Content-Disposition", "attachment; filename=" + filename);
+
+      InputStream inputStream = url.openStream();
+      OutputStream outputStream = response.raw().getOutputStream();
+      byte[] buffer = new byte[4096];
+      int n = -1;
+      while ((n = inputStream.read(buffer)) != -1) {
+        outputStream.write(buffer, 0, n);
+      }
+      inputStream.close();
+
+      return response.raw();
     });
   }
 
