@@ -6,6 +6,7 @@ import com.dramadownloader.drama.fetch.episode.DramacoolcomEpisodePageScraper;
 import com.dramadownloader.drama.fetch.episode.EpisodePageScraper;
 import com.dramadownloader.drama.fetch.episode.EpisodePageScraperFactory;
 import com.dramadownloader.drama.fetch.episode.EpisodeScrapeResult;
+import com.dramadownloader.drama.fetch.hosting.DramauploadHostingPageScraper;
 import com.dramadownloader.drama.fetch.hosting.EmbeddramaHostingPageScraper;
 import com.dramadownloader.drama.fetch.hosting.HostingPageScraper;
 import com.dramadownloader.drama.fetch.hosting.HostingPageScraperFactory;
@@ -28,6 +29,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -133,6 +136,23 @@ public class HelloSpark {
 
       if (apiResponse.getLinks().size() > 0) {
         apiResponse.setStatus(FetchStreamsResponse.Status.OK);
+
+        // Filter fetch.dramadownloader.com links
+        List<FetchStreamsResponse.Link> firstPriorityLinks = new ArrayList<>();
+        List<FetchStreamsResponse.Link> secondPriorityLinks = new ArrayList<>();
+        for(FetchStreamsResponse.Link link : apiResponse.getLinks()) {
+          if(link.getUrl().contains("fetch.dramadownloader.com")) {
+            secondPriorityLinks.add(link);
+          } else {
+            firstPriorityLinks.add(link);
+          }
+        }
+
+        if(firstPriorityLinks.size() > 0) {
+          apiResponse.setLinks(firstPriorityLinks);
+        } else {
+          apiResponse.setLinks(secondPriorityLinks);
+        }
       } else {
         apiResponse.setStatus(FetchStreamsResponse.Status.FAILED);
       }
@@ -191,10 +211,12 @@ public class HelloSpark {
   }
 
   private static void initHostingPageScraperFactory() {
+    DramauploadHostingPageScraper dramauploadHostingPageScraper = new DramauploadHostingPageScraper();
     EmbeddramaHostingPageScraper embeddramaHostingPageScraper = new EmbeddramaHostingPageScraper();
     Mp4uploadHostingPageScraper mp4uploadHostingPageScraper = new Mp4uploadHostingPageScraper();
     VideouploadusHostingPageScraper videouploadusHostingPageScraper = new VideouploadusHostingPageScraper();
 
+    HOSTING_PAGE_SCRAPER_FACTORY.registerScraper(dramauploadHostingPageScraper);
     HOSTING_PAGE_SCRAPER_FACTORY.registerScraper(embeddramaHostingPageScraper);
     HOSTING_PAGE_SCRAPER_FACTORY.registerScraper(mp4uploadHostingPageScraper);
     HOSTING_PAGE_SCRAPER_FACTORY.registerScraper(videouploadusHostingPageScraper);
