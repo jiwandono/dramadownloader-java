@@ -18,6 +18,8 @@ public class DramatvEpisodePageScraper extends EpisodePageScraper {
     DOMAINS.add("www.dramatv.tv");
     DOMAINS.add("dramatv.co");
     DOMAINS.add("www.dramatv.co");
+    DOMAINS.add("dramacool.tv");
+    DOMAINS.add("www.dramacool.tv");
   }
 
   @Override
