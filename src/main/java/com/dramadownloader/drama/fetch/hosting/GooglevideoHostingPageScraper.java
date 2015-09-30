@@ -10,6 +10,7 @@ public class GooglevideoHostingPageScraper extends HostingPageScraper {
   static {
     SEQUENCES = new HashSet<>();
     SEQUENCES.add("googlevideo.com/");
+    SEQUENCES.add("googleusercontent.com/");
   }
 
   @Override
