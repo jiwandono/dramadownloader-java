@@ -24,6 +24,11 @@ public class VideouploadusHostingPageScraper extends HostingPageScraper {
 
       result.setStatus(HostingScrapeResult.Status.OK);
       result.getDownloadables().add(new HostingScrapeResult.Downloadable(downloadUrl, false));
+    } else if(url.contains("videoupload.us/embed/drama-")) {
+      String downloadUrl = url.replace("/embed/drama-", "/drama/video-");
+
+      result.setStatus(HostingScrapeResult.Status.OK);
+      result.getDownloadables().add(new HostingScrapeResult.Downloadable(downloadUrl, false));
     }
 
     return result;

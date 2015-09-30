@@ -5,6 +5,7 @@ import com.dramadownloader.app.api.v1.monitor.LegacyMonitor;
 import com.dramadownloader.drama.fetch.episode.AnimestvEpisodePageScraper;
 import com.dramadownloader.drama.fetch.episode.DramacoolcomEpisodePageScraper;
 import com.dramadownloader.drama.fetch.episode.DramafirecomEpisodePageScraper;
+import com.dramadownloader.drama.fetch.episode.DramaniceEpisodePageScraper;
 import com.dramadownloader.drama.fetch.episode.DramatvEpisodePageScraper;
 import com.dramadownloader.drama.fetch.episode.EpisodePageScraper;
 import com.dramadownloader.drama.fetch.episode.EpisodePageScraperFactory;
@@ -214,11 +215,13 @@ public class HelloSpark {
     AnimestvEpisodePageScraper animestvEpisodePageScraper = new AnimestvEpisodePageScraper();
     DramacoolcomEpisodePageScraper dramacoolcomEpisodePageScraper = new DramacoolcomEpisodePageScraper();
     DramafirecomEpisodePageScraper dramafirecomEpisodePageScraper = new DramafirecomEpisodePageScraper();
+    DramaniceEpisodePageScraper dramaniceEpisodePageScraper = new DramaniceEpisodePageScraper();
     DramatvEpisodePageScraper dramatvEpisodePageScraper = new DramatvEpisodePageScraper();
 
     EPISODE_PAGE_SCRAPER_FACTORY.registerPageScraper(animestvEpisodePageScraper);
     EPISODE_PAGE_SCRAPER_FACTORY.registerPageScraper(dramacoolcomEpisodePageScraper);
     EPISODE_PAGE_SCRAPER_FACTORY.registerPageScraper(dramafirecomEpisodePageScraper);
+    EPISODE_PAGE_SCRAPER_FACTORY.registerPageScraper(dramaniceEpisodePageScraper);
     EPISODE_PAGE_SCRAPER_FACTORY.registerPageScraper(dramatvEpisodePageScraper);
   }
 
