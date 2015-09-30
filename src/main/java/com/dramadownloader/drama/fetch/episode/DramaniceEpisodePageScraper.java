@@ -40,9 +40,9 @@ public class DramaniceEpisodePageScraper extends EpisodePageScraper {
 
     int i = 1;
     for(String streamUrl : streamUrls) {
-      if(streamUrl.contains("itag=18")) {
+      if(streamUrl.contains("itag=18") || streamUrl.contains("=m18")) {
         result.getStreams().add(new EpisodeScrapeResult.Stream("Server SD", streamUrl));
-      } else if(streamUrl.contains("itag=22")) {
+      } else if(streamUrl.contains("itag=22") || streamUrl.contains("=m22")) {
         result.getStreams().add(new EpisodeScrapeResult.Stream("Server HD", streamUrl));
       } else {
         result.getStreams().add(new EpisodeScrapeResult.Stream("Server " + i++, streamUrl));
