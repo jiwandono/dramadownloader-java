@@ -42,7 +42,7 @@ public class DramacoolcomEpisodePageScraper extends EpisodePageScraper {
       if(!candidates.isEmpty()) {
         streamUrl = candidates.first().attr("src");
       } else {
-        // Most probably using jwplayer. Look in the script tag.
+        // Most probably using jwplayer or something else hidden. Look in the script tag.
         Elements scripts = targetEl.getElementsByTag("script");
         for(Element script : scripts) {
           for(DataNode dataNode : script.dataNodes()) {
@@ -65,9 +65,12 @@ public class DramacoolcomEpisodePageScraper extends EpisodePageScraper {
       }
 
       if(streamUrl != null) {
-        result.setStatus(EpisodeScrapeResult.Status.OK);
         result.getStreams().add(new EpisodeScrapeResult.Stream(name, streamUrl));
       }
+    }
+
+    if(result.getStreams().size() > 0) {
+      result.setStatus(EpisodeScrapeResult.Status.OK);
     }
 
     return result;
