@@ -87,7 +87,7 @@ public class HelloSpark {
       FetchStreamsRequest apiRequest = OBJECT_MAPPER.readValue(request.body(), FetchStreamsRequest.class);
       FetchStreamsResponse apiResponse = new FetchStreamsResponse();
 
-      String episodeUrl = apiRequest.getUrl();
+      String episodeUrl = apiRequest.getUrl().trim();
 
       // Check cache
       Object cachedObject = MEMCACHED_CLIENT.get("fetchstreams_" + episodeUrl);
