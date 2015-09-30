@@ -16,7 +16,8 @@ public class EmbeddramaHostingPageScraper extends HostingPageScraper {
 
   static {
     SEQUENCES = new HashSet<>();
-    SEQUENCES.add("dramacool.com/embeddrama");
+    SEQUENCES.add("/embeddrama");
+    SEQUENCES.add("/embed1ads");
   }
 
   @Override
