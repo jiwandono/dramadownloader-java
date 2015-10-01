@@ -19,6 +19,8 @@ public class AnimestvEpisodePageScraper extends EpisodePageScraper {
     DOMAINS = new HashSet<>();
     DOMAINS.add("animestv.us");
     DOMAINS.add("www.animestv.us");
+    DOMAINS.add("anime4you.net");
+    DOMAINS.add("www.anime4you.net");
   }
 
   @Override
