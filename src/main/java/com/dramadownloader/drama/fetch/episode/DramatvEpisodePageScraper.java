@@ -16,6 +16,8 @@ public class DramatvEpisodePageScraper extends EpisodePageScraper {
     DOMAINS = new HashSet<>();
     DOMAINS.add("dramatv.tv");
     DOMAINS.add("www.dramatv.tv");
+    DOMAINS.add("dramatv.us");
+    DOMAINS.add("www.dramatv.us");
     DOMAINS.add("dramatv.co");
     DOMAINS.add("www.dramatv.co");
     DOMAINS.add("dramacool.tv");
