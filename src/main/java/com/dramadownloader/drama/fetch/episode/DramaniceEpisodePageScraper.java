@@ -16,6 +16,8 @@ public class DramaniceEpisodePageScraper extends EpisodePageScraper {
     DOMAINS = new HashSet<>();
     DOMAINS.add("dramanice.net");
     DOMAINS.add("www.dramanice.net");
+    DOMAINS.add("dramanice.us");
+    DOMAINS.add("www.dramanice.us");
   }
 
   @Override
