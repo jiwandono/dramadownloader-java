@@ -19,7 +19,11 @@ public class VideouploadusHostingPageScraper extends HostingPageScraper {
     // Just change embed- to video- then it will show a page with download link.
     HostingScrapeResult result = new HostingScrapeResult(HostingScrapeResult.Status.FAILED);
 
-    if(url.contains("videoupload.us/drama/embed-")) {
+    if(url.contains("videoupload.us/drama/video")) {
+      // Leave as is.
+      result.setStatus(HostingScrapeResult.Status.OK);
+      result.getDownloadables().add(new HostingScrapeResult.Downloadable(url, false));
+    } else if(url.contains("videoupload.us/drama/embed-")) {
       String downloadUrl = url.replace("/embed-", "/video-");
 
       result.setStatus(HostingScrapeResult.Status.OK);
