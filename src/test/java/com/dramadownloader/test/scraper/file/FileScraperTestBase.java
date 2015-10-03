@@ -1,7 +1,7 @@
 package com.dramadownloader.test.scraper.file;
 
-import com.dramadownloader.drama.scraper.file.FileScraper;
-import com.dramadownloader.drama.scraper.file.FileScrapeResult;
+import com.dramadownloader.scraper.file.FileScraper;
+import com.dramadownloader.scraper.file.FileScrapeResult;
 import org.junit.Assert;
 
 public abstract class FileScraperTestBase {

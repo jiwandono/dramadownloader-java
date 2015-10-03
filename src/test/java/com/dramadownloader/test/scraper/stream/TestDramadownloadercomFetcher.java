@@ -1,7 +1,7 @@
 package com.dramadownloader.test.scraper.stream;
 
-import com.dramadownloader.drama.scraper.stream.DramacoolcomStreamScraper;
-import com.dramadownloader.drama.scraper.stream.StreamScraper;
+import com.dramadownloader.scraper.stream.DramacoolcomStreamScraper;
+import com.dramadownloader.scraper.stream.StreamScraper;
 import org.junit.Test;
 
 import java.util.ArrayList;

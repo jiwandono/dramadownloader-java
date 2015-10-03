@@ -1,7 +1,7 @@
 package com.dramadownloader.test.scraper.stream;
 
-import com.dramadownloader.drama.scraper.stream.StreamScraper;
-import com.dramadownloader.drama.scraper.stream.StreamScrapeResult;
+import com.dramadownloader.scraper.stream.StreamScraper;
+import com.dramadownloader.scraper.stream.StreamScrapeResult;
 import org.junit.Assert;
 
 public abstract class StreamScraperTestBase {

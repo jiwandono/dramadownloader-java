@@ -2,23 +2,26 @@ package com.dramadownloader.app.api.v1;
 
 import com.dramadownloader.app.api.v1.monitor.LegacyMongoMonitor;
 import com.dramadownloader.app.api.v1.monitor.LegacyMonitor;
-import com.dramadownloader.drama.scraper.stream.AnimestvStreamScraper;
-import com.dramadownloader.drama.scraper.stream.DramacoolcomStreamScraper;
-import com.dramadownloader.drama.scraper.stream.DramafirecomStreamScraper;
-import com.dramadownloader.drama.scraper.stream.DramaniceStreamScraper;
-import com.dramadownloader.drama.scraper.stream.DramatvStreamScraper;
-import com.dramadownloader.drama.scraper.stream.StreamScraper;
-import com.dramadownloader.drama.scraper.stream.StreamScraperFactory;
-import com.dramadownloader.drama.scraper.stream.StreamScrapeResult;
-import com.dramadownloader.drama.scraper.file.DramauploadFileScraper;
-import com.dramadownloader.drama.scraper.file.EmbeddramaFileScraper;
-import com.dramadownloader.drama.scraper.file.GooglevideoFileScraper;
-import com.dramadownloader.drama.scraper.file.FileScraper;
-import com.dramadownloader.drama.scraper.file.FileScraperFactory;
-import com.dramadownloader.drama.scraper.file.FileScrapeResult;
-import com.dramadownloader.drama.scraper.file.Mp4UploadFileScraper;
-import com.dramadownloader.drama.scraper.file.StoragestreamingFileScraper;
-import com.dramadownloader.drama.scraper.file.VideouploadusFileScraper;
+import com.dramadownloader.common.component.CommonComponent;
+import com.dramadownloader.common.component.MemcachedComponent;
+import com.dramadownloader.scraper.component.ScraperComponent;
+import com.dramadownloader.scraper.stream.AnimestvStreamScraper;
+import com.dramadownloader.scraper.stream.DramacoolcomStreamScraper;
+import com.dramadownloader.scraper.stream.DramafirecomStreamScraper;
+import com.dramadownloader.scraper.stream.DramaniceStreamScraper;
+import com.dramadownloader.scraper.stream.DramatvStreamScraper;
+import com.dramadownloader.scraper.stream.StreamScraper;
+import com.dramadownloader.scraper.stream.StreamScraperFactory;
+import com.dramadownloader.scraper.stream.StreamScrapeResult;
+import com.dramadownloader.scraper.file.DramauploadFileScraper;
+import com.dramadownloader.scraper.file.EmbeddramaFileScraper;
+import com.dramadownloader.scraper.file.GooglevideoFileScraper;
+import com.dramadownloader.scraper.file.FileScraper;
+import com.dramadownloader.scraper.file.FileScraperFactory;
+import com.dramadownloader.scraper.file.FileScrapeResult;
+import com.dramadownloader.scraper.file.Mp4UploadFileScraper;
+import com.dramadownloader.scraper.file.StoragestreamingFileScraper;
+import com.dramadownloader.scraper.file.VideouploadusFileScraper;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,26 +52,16 @@ public class HelloSpark {
 
   private static long FETCH_TIMEOUT_MSEC = 30000L;
 
-  private static final ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE = Executors.newScheduledThreadPool(16);
-  private static final StreamScraperFactory STREAM_SCRAPER_FACTORY = new StreamScraperFactory();
-  private static final FileScraperFactory FILE_SCRAPER_FACTORY = new FileScraperFactory();
+  private static final CommonComponent commonComponent = new CommonComponent();
+  private static final MemcachedComponent memcachedComponent = new MemcachedComponent();
+  private static final ScraperComponent scraperComponent = new ScraperComponent();
 
-  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+  private static final MemcachedClient memcachedClient = memcachedComponent.getMemcachedClient();
+  private static final ObjectMapper objectMapper = commonComponent.getObjectMapper();
 
-  private static final MongoClient MONGO_CLIENT = new MongoClient( "localhost" );
-  private static final DB DB_MONITOR = MONGO_CLIENT.getDB("dramadownloader-monitor");
-  private static final Morphia MORPHIA = new Morphia();
-
-  private static final LegacyMonitor LEGACY_MONITOR = new LegacyMongoMonitor(DB_MONITOR, MORPHIA);
-
-  private static MemcachedClient MEMCACHED_CLIENT;
+  private static final LegacyMonitor LEGACY_MONITOR = new LegacyMongoMonitor(commonComponent.getDbMonitor(), commonComponent.getMorphia());
 
   public static void main(String[] args) {
-    initStreamScraperFactory();
-    initFileScraperFactory();
-    initObjectMapper();
-    initMemcachedClient();
-
     helloWorld();
     fetchStreams();
     stats();
@@ -85,25 +78,25 @@ public class HelloSpark {
       response.header("Access-Control-Allow-Origin", "*");
       response.header("Vary", "Origin");
 
-      FetchStreamsRequest apiRequest = OBJECT_MAPPER.readValue(request.body(), FetchStreamsRequest.class);
+      FetchStreamsRequest apiRequest = objectMapper.readValue(request.body(), FetchStreamsRequest.class);
       FetchStreamsResponse apiResponse = new FetchStreamsResponse();
 
       String episodeUrl = apiRequest.getUrl().trim();
 
       // Check cache
-      Object cachedObject = MEMCACHED_CLIENT.get("fetchstreams_" + episodeUrl);
+      Object cachedObject = memcachedClient.get("fetchstreams_" + episodeUrl);
       if (cachedObject != null) {
         LOGGER.info("Found cached response for " + episodeUrl);
-        FetchStreamsResponse cachedApiResponse = OBJECT_MAPPER.readValue((String) cachedObject, FetchStreamsResponse.class);
+        FetchStreamsResponse cachedApiResponse = objectMapper.readValue((String) cachedObject, FetchStreamsResponse.class);
         LEGACY_MONITOR.onRequestProcessed(episodeUrl, System.currentTimeMillis(), cachedApiResponse.getStatus().equals(FetchStreamsResponse.Status.OK));
-        return OBJECT_MAPPER.writeValueAsString(cachedApiResponse);
+        return objectMapper.writeValueAsString(cachedApiResponse);
       }
 
-      StreamScraper streamScraper = STREAM_SCRAPER_FACTORY.getScraper(episodeUrl);
+      StreamScraper streamScraper = scraperComponent.getStreamScraperFactory().getScraper(episodeUrl);
       if (streamScraper == null) {
         apiResponse.setStatus(FetchStreamsResponse.Status.UNSUPPORTED);
         LEGACY_MONITOR.onRequestProcessed(episodeUrl, System.currentTimeMillis(), apiResponse.getStatus().equals(FetchStreamsResponse.Status.OK));
-        return OBJECT_MAPPER.writeValueAsString(apiResponse);
+        return objectMapper.writeValueAsString(apiResponse);
       }
 
       StreamScrapeResult streamScrapeResult = streamScraper.scrape(episodeUrl);
@@ -115,13 +108,13 @@ public class HelloSpark {
         final String streamUrl = stream.getStreamUrl();
         LOGGER.info("Processing stream " + streamName + " - " + stream.getStreamUrl());
 
-        final FileScraper fileScraper = FILE_SCRAPER_FACTORY.getScraper(streamUrl);
+        final FileScraper fileScraper = scraperComponent.getFileScraperFactory().getScraper(streamUrl);
         if (fileScraper == null) {
           countDownLatch.countDown();
           continue;
         }
 
-        SCHEDULED_EXECUTOR_SERVICE.submit(() -> {
+        commonComponent.getScheduledExecutorService().submit(() -> {
           try {
             FileScrapeResult fileScrapeResult = fileScraper.scrape(streamUrl);
             if (fileScrapeResult.getStatus().equals(FileScrapeResult.Status.OK)) {
@@ -146,15 +139,15 @@ public class HelloSpark {
         // Filter fetch.dramadownloader.com links
         List<FetchStreamsResponse.Link> firstPriorityLinks = new ArrayList<>();
         List<FetchStreamsResponse.Link> secondPriorityLinks = new ArrayList<>();
-        for(FetchStreamsResponse.Link link : apiResponse.getLinks()) {
-          if(link.getUrl().contains("fetch.dramadownloader.com")) {
+        for (FetchStreamsResponse.Link link : apiResponse.getLinks()) {
+          if (link.getUrl().contains("fetch.dramadownloader.com")) {
             secondPriorityLinks.add(link);
           } else {
             firstPriorityLinks.add(link);
           }
         }
 
-        if(firstPriorityLinks.size() > 0) {
+        if (firstPriorityLinks.size() > 0) {
           apiResponse.setLinks(firstPriorityLinks);
         } else {
           apiResponse.setLinks(secondPriorityLinks);
@@ -165,12 +158,12 @@ public class HelloSpark {
 
       // Cache result
       if (apiResponse.getStatus().equals(FetchStreamsResponse.Status.OK)) {
-        MEMCACHED_CLIENT.set("fetchstreams_" + episodeUrl, 3600, OBJECT_MAPPER.writeValueAsString(apiResponse));
+        memcachedClient.set("fetchstreams_" + episodeUrl, 3600, objectMapper.writeValueAsString(apiResponse));
       }
 
       LEGACY_MONITOR.onRequestProcessed(episodeUrl, System.currentTimeMillis(), apiResponse.getStatus().equals(FetchStreamsResponse.Status.OK));
 
-      return OBJECT_MAPPER.writeValueAsString(apiResponse);
+      return objectMapper.writeValueAsString(apiResponse);
     });
   }
 
@@ -181,7 +174,7 @@ public class HelloSpark {
       response.header("Vary", "Origin");
 
       long minTimestamp = System.currentTimeMillis() - 3600_000L;
-      return OBJECT_MAPPER.writeValueAsString(LEGACY_MONITOR.getEntries(minTimestamp));
+      return objectMapper.writeValueAsString(LEGACY_MONITOR.getEntries(minTimestamp));
     });
   }
 
@@ -207,54 +200,5 @@ public class HelloSpark {
 
       return response.raw();
     });
-  }
-
-  // ==========
-
-  private static void initStreamScraperFactory() {
-    AnimestvStreamScraper animestvStreamScraper = new AnimestvStreamScraper();
-    DramacoolcomStreamScraper dramacoolcomStreamScraper = new DramacoolcomStreamScraper();
-    DramafirecomStreamScraper dramafirecomStreamScraper = new DramafirecomStreamScraper();
-    DramaniceStreamScraper dramaniceStreamScraper = new DramaniceStreamScraper();
-    DramatvStreamScraper dramatvStreamScraper = new DramatvStreamScraper();
-
-    STREAM_SCRAPER_FACTORY.register(animestvStreamScraper);
-    STREAM_SCRAPER_FACTORY.register(dramacoolcomStreamScraper);
-    STREAM_SCRAPER_FACTORY.register(dramafirecomStreamScraper);
-    STREAM_SCRAPER_FACTORY.register(dramaniceStreamScraper);
-    STREAM_SCRAPER_FACTORY.register(dramatvStreamScraper);
-  }
-
-  private static void initFileScraperFactory() {
-    DramauploadFileScraper dramauploadFileScraper = new DramauploadFileScraper();
-    EmbeddramaFileScraper embeddramaFileScraper = new EmbeddramaFileScraper();
-    GooglevideoFileScraper googlevideoFileScraper = new GooglevideoFileScraper();
-    Mp4UploadFileScraper mp4uploadFileScraper = new Mp4UploadFileScraper();
-    StoragestreamingFileScraper storagestreamingFileScraper = new StoragestreamingFileScraper();
-    VideouploadusFileScraper videouploadusFileScraper = new VideouploadusFileScraper();
-
-    FILE_SCRAPER_FACTORY.register(dramauploadFileScraper);
-    FILE_SCRAPER_FACTORY.register(embeddramaFileScraper);
-    FILE_SCRAPER_FACTORY.register(googlevideoFileScraper);
-    FILE_SCRAPER_FACTORY.register(mp4uploadFileScraper);
-    FILE_SCRAPER_FACTORY.register(storagestreamingFileScraper);
-    FILE_SCRAPER_FACTORY.register(videouploadusFileScraper);
-  }
-
-  private static void initObjectMapper() {
-    OBJECT_MAPPER
-        .setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE)
-        .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-  }
-
-  private static void initMemcachedClient() {
-    try {
-      MEMCACHED_CLIENT = new MemcachedClient(
-          new BinaryConnectionFactory(),
-          AddrUtil.getAddresses("localhost:11211")
-      );
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
   }
 }
