@@ -31,6 +31,8 @@ public class DramacoolcomEpisodePageScraper extends EpisodePageScraper {
     for(Element a : anchors) {
       String target = a.attr("href"); // Points to video container eg. #servercool, #server1, etc.
       Element targetEl = doc.select(target).first();
+      if(targetEl == null)
+        continue;
 
       String name = a.text();
       String streamUrl = null;

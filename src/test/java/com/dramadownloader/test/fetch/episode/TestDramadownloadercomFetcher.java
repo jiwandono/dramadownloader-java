@@ -11,6 +11,7 @@ public class TestDramadownloadercomFetcher extends EpisodeFetcherTestBase {
 
   private static final List<String> urls = new ArrayList<>();
   static {
+    urls.add("http://www.dramacool.com/i-summon-you-gold-episode-1.html");
     urls.add("www.dramacool.com/dr-mo-clinic-dr-ian--episode-6.html");
     urls.add("www.dramacool.com/my-girlfriend-is-a-gumiho-episode-11.html");
     urls.add("dramacool.com/-empresses-in-the-palace-episode-71.html");
