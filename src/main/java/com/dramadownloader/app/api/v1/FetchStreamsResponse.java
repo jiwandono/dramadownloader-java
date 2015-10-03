@@ -1,7 +1,5 @@
 package com.dramadownloader.app.api.v1;
 
-import com.dramadownloader.drama.fetch.hosting.HostingScrapeResult;
-
 import java.util.ArrayList;
 import java.util.List;
 

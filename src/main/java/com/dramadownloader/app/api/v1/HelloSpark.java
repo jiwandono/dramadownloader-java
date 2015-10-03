@@ -2,23 +2,23 @@ package com.dramadownloader.app.api.v1;
 
 import com.dramadownloader.app.api.v1.monitor.LegacyMongoMonitor;
 import com.dramadownloader.app.api.v1.monitor.LegacyMonitor;
-import com.dramadownloader.drama.fetch.episode.AnimestvEpisodePageScraper;
-import com.dramadownloader.drama.fetch.episode.DramacoolcomEpisodePageScraper;
-import com.dramadownloader.drama.fetch.episode.DramafirecomEpisodePageScraper;
-import com.dramadownloader.drama.fetch.episode.DramaniceEpisodePageScraper;
-import com.dramadownloader.drama.fetch.episode.DramatvEpisodePageScraper;
-import com.dramadownloader.drama.fetch.episode.EpisodePageScraper;
-import com.dramadownloader.drama.fetch.episode.EpisodePageScraperFactory;
-import com.dramadownloader.drama.fetch.episode.EpisodeScrapeResult;
-import com.dramadownloader.drama.fetch.hosting.DramauploadHostingPageScraper;
-import com.dramadownloader.drama.fetch.hosting.EmbeddramaHostingPageScraper;
-import com.dramadownloader.drama.fetch.hosting.GooglevideoHostingPageScraper;
-import com.dramadownloader.drama.fetch.hosting.HostingPageScraper;
-import com.dramadownloader.drama.fetch.hosting.HostingPageScraperFactory;
-import com.dramadownloader.drama.fetch.hosting.HostingScrapeResult;
-import com.dramadownloader.drama.fetch.hosting.Mp4uploadHostingPageScraper;
-import com.dramadownloader.drama.fetch.hosting.StoragestreamingHostingPageScraper;
-import com.dramadownloader.drama.fetch.hosting.VideouploadusHostingPageScraper;
+import com.dramadownloader.drama.scraper.stream.AnimestvStreamScraper;
+import com.dramadownloader.drama.scraper.stream.DramacoolcomStreamScraper;
+import com.dramadownloader.drama.scraper.stream.DramafirecomStreamScraper;
+import com.dramadownloader.drama.scraper.stream.DramaniceStreamScraper;
+import com.dramadownloader.drama.scraper.stream.DramatvStreamScraper;
+import com.dramadownloader.drama.scraper.stream.StreamScraper;
+import com.dramadownloader.drama.scraper.stream.StreamScraperFactory;
+import com.dramadownloader.drama.scraper.stream.StreamScrapeResult;
+import com.dramadownloader.drama.scraper.file.DramauploadFileScraper;
+import com.dramadownloader.drama.scraper.file.EmbeddramaFileScraper;
+import com.dramadownloader.drama.scraper.file.GooglevideoFileScraper;
+import com.dramadownloader.drama.scraper.file.FileScraper;
+import com.dramadownloader.drama.scraper.file.FileScraperFactory;
+import com.dramadownloader.drama.scraper.file.FileScrapeResult;
+import com.dramadownloader.drama.scraper.file.Mp4UploadFileScraper;
+import com.dramadownloader.drama.scraper.file.StoragestreamingFileScraper;
+import com.dramadownloader.drama.scraper.file.VideouploadusFileScraper;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,8 +50,8 @@ public class HelloSpark {
   private static long FETCH_TIMEOUT_MSEC = 30000L;
 
   private static final ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE = Executors.newScheduledThreadPool(16);
-  private static final EpisodePageScraperFactory EPISODE_PAGE_SCRAPER_FACTORY = new EpisodePageScraperFactory();
-  private static final HostingPageScraperFactory HOSTING_PAGE_SCRAPER_FACTORY = new HostingPageScraperFactory();
+  private static final StreamScraperFactory STREAM_SCRAPER_FACTORY = new StreamScraperFactory();
+  private static final FileScraperFactory FILE_SCRAPER_FACTORY = new FileScraperFactory();
 
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -64,8 +64,8 @@ public class HelloSpark {
   private static MemcachedClient MEMCACHED_CLIENT;
 
   public static void main(String[] args) {
-    initEpisodePageScraperFactory();
-    initHostingPageScraperFactory();
+    initStreamScraperFactory();
+    initFileScraperFactory();
     initObjectMapper();
     initMemcachedClient();
 
@@ -99,35 +99,35 @@ public class HelloSpark {
         return OBJECT_MAPPER.writeValueAsString(cachedApiResponse);
       }
 
-      EpisodePageScraper episodePageScraper = EPISODE_PAGE_SCRAPER_FACTORY.getPageScraper(episodeUrl);
-      if (episodePageScraper == null) {
+      StreamScraper streamScraper = STREAM_SCRAPER_FACTORY.getScraper(episodeUrl);
+      if (streamScraper == null) {
         apiResponse.setStatus(FetchStreamsResponse.Status.UNSUPPORTED);
         LEGACY_MONITOR.onRequestProcessed(episodeUrl, System.currentTimeMillis(), apiResponse.getStatus().equals(FetchStreamsResponse.Status.OK));
         return OBJECT_MAPPER.writeValueAsString(apiResponse);
       }
 
-      EpisodeScrapeResult episodeScrapeResult = episodePageScraper.scrape(episodeUrl);
-      LOGGER.info("URL " + episodeUrl + " processed with status " + episodeScrapeResult.getStatus());
+      StreamScrapeResult streamScrapeResult = streamScraper.scrape(episodeUrl);
+      LOGGER.info("URL " + episodeUrl + " processed with status " + streamScrapeResult.getStatus());
 
-      CountDownLatch countDownLatch = new CountDownLatch(episodeScrapeResult.getStreams().size());
-      for (EpisodeScrapeResult.Stream stream : episodeScrapeResult.getStreams()) {
+      CountDownLatch countDownLatch = new CountDownLatch(streamScrapeResult.getStreams().size());
+      for (StreamScrapeResult.Stream stream : streamScrapeResult.getStreams()) {
         final String streamName = stream.getStreamName();
         final String streamUrl = stream.getStreamUrl();
         LOGGER.info("Processing stream " + streamName + " - " + stream.getStreamUrl());
 
-        final HostingPageScraper hostingPageScraper = HOSTING_PAGE_SCRAPER_FACTORY.getPageScraper(streamUrl);
-        if (hostingPageScraper == null) {
+        final FileScraper fileScraper = FILE_SCRAPER_FACTORY.getScraper(streamUrl);
+        if (fileScraper == null) {
           countDownLatch.countDown();
           continue;
         }
 
         SCHEDULED_EXECUTOR_SERVICE.submit(() -> {
           try {
-            HostingScrapeResult hostingScrapeResult = hostingPageScraper.scrape(streamUrl);
-            if (hostingScrapeResult.getStatus().equals(HostingScrapeResult.Status.OK)) {
-              HostingScrapeResult.Downloadable downloadable = hostingScrapeResult.getDownloadables().get(0);
+            FileScrapeResult fileScrapeResult = fileScraper.scrape(streamUrl);
+            if (fileScrapeResult.getStatus().equals(FileScrapeResult.Status.OK)) {
+              FileScrapeResult.File file = fileScrapeResult.getFiles().get(0);
               synchronized (apiResponse.getLinks()) {
-                FetchStreamsResponse.Link link = new FetchStreamsResponse.Link(streamName, downloadable.getDownloadUrl(), downloadable.isDirectLink());
+                FetchStreamsResponse.Link link = new FetchStreamsResponse.Link(streamName, file.getDownloadUrl(), file.isDirectLink());
                 apiResponse.getLinks().add(link);
               }
             }
@@ -211,34 +211,34 @@ public class HelloSpark {
 
   // ==========
 
-  private static void initEpisodePageScraperFactory() {
-    AnimestvEpisodePageScraper animestvEpisodePageScraper = new AnimestvEpisodePageScraper();
-    DramacoolcomEpisodePageScraper dramacoolcomEpisodePageScraper = new DramacoolcomEpisodePageScraper();
-    DramafirecomEpisodePageScraper dramafirecomEpisodePageScraper = new DramafirecomEpisodePageScraper();
-    DramaniceEpisodePageScraper dramaniceEpisodePageScraper = new DramaniceEpisodePageScraper();
-    DramatvEpisodePageScraper dramatvEpisodePageScraper = new DramatvEpisodePageScraper();
+  private static void initStreamScraperFactory() {
+    AnimestvStreamScraper animestvStreamScraper = new AnimestvStreamScraper();
+    DramacoolcomStreamScraper dramacoolcomStreamScraper = new DramacoolcomStreamScraper();
+    DramafirecomStreamScraper dramafirecomStreamScraper = new DramafirecomStreamScraper();
+    DramaniceStreamScraper dramaniceStreamScraper = new DramaniceStreamScraper();
+    DramatvStreamScraper dramatvStreamScraper = new DramatvStreamScraper();
 
-    EPISODE_PAGE_SCRAPER_FACTORY.registerPageScraper(animestvEpisodePageScraper);
-    EPISODE_PAGE_SCRAPER_FACTORY.registerPageScraper(dramacoolcomEpisodePageScraper);
-    EPISODE_PAGE_SCRAPER_FACTORY.registerPageScraper(dramafirecomEpisodePageScraper);
-    EPISODE_PAGE_SCRAPER_FACTORY.registerPageScraper(dramaniceEpisodePageScraper);
-    EPISODE_PAGE_SCRAPER_FACTORY.registerPageScraper(dramatvEpisodePageScraper);
+    STREAM_SCRAPER_FACTORY.register(animestvStreamScraper);
+    STREAM_SCRAPER_FACTORY.register(dramacoolcomStreamScraper);
+    STREAM_SCRAPER_FACTORY.register(dramafirecomStreamScraper);
+    STREAM_SCRAPER_FACTORY.register(dramaniceStreamScraper);
+    STREAM_SCRAPER_FACTORY.register(dramatvStreamScraper);
   }
 
-  private static void initHostingPageScraperFactory() {
-    DramauploadHostingPageScraper dramauploadHostingPageScraper = new DramauploadHostingPageScraper();
-    EmbeddramaHostingPageScraper embeddramaHostingPageScraper = new EmbeddramaHostingPageScraper();
-    GooglevideoHostingPageScraper googlevideoHostingPageScraper = new GooglevideoHostingPageScraper();
-    Mp4uploadHostingPageScraper mp4uploadHostingPageScraper = new Mp4uploadHostingPageScraper();
-    StoragestreamingHostingPageScraper storagestreamingHostingPageScraper = new StoragestreamingHostingPageScraper();
-    VideouploadusHostingPageScraper videouploadusHostingPageScraper = new VideouploadusHostingPageScraper();
+  private static void initFileScraperFactory() {
+    DramauploadFileScraper dramauploadFileScraper = new DramauploadFileScraper();
+    EmbeddramaFileScraper embeddramaFileScraper = new EmbeddramaFileScraper();
+    GooglevideoFileScraper googlevideoFileScraper = new GooglevideoFileScraper();
+    Mp4UploadFileScraper mp4uploadFileScraper = new Mp4UploadFileScraper();
+    StoragestreamingFileScraper storagestreamingFileScraper = new StoragestreamingFileScraper();
+    VideouploadusFileScraper videouploadusFileScraper = new VideouploadusFileScraper();
 
-    HOSTING_PAGE_SCRAPER_FACTORY.registerScraper(dramauploadHostingPageScraper);
-    HOSTING_PAGE_SCRAPER_FACTORY.registerScraper(embeddramaHostingPageScraper);
-    HOSTING_PAGE_SCRAPER_FACTORY.registerScraper(googlevideoHostingPageScraper);
-    HOSTING_PAGE_SCRAPER_FACTORY.registerScraper(mp4uploadHostingPageScraper);
-    HOSTING_PAGE_SCRAPER_FACTORY.registerScraper(storagestreamingHostingPageScraper);
-    HOSTING_PAGE_SCRAPER_FACTORY.registerScraper(videouploadusHostingPageScraper);
+    FILE_SCRAPER_FACTORY.register(dramauploadFileScraper);
+    FILE_SCRAPER_FACTORY.register(embeddramaFileScraper);
+    FILE_SCRAPER_FACTORY.register(googlevideoFileScraper);
+    FILE_SCRAPER_FACTORY.register(mp4uploadFileScraper);
+    FILE_SCRAPER_FACTORY.register(storagestreamingFileScraper);
+    FILE_SCRAPER_FACTORY.register(videouploadusFileScraper);
   }
 
   private static void initObjectMapper() {
