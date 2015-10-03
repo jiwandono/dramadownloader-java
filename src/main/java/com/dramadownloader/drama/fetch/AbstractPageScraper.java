@@ -1,16 +1,17 @@
 package com.dramadownloader.drama.fetch;
 
 import org.apache.log4j.Logger;
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.parser.Tag;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class AbstractPageScraper<T> implements PageScraper<T> {
@@ -68,16 +69,20 @@ public abstract class AbstractPageScraper<T> implements PageScraper<T> {
   }
 
   protected Document getDocument(String url) throws IOException {
+    return getDocument(url, new HashMap<>());
+  }
+
+  protected Document getDocument(String url, Map<String, String> cookies) throws IOException{
     URL urlObject = createUrl(url);
     if(urlObject == null)
       return new Document("");
 
-    Document doc = Jsoup.connect(urlObject.toString())
+    Connection connection = Jsoup.connect(urlObject.toString())
         .userAgent(getRandomUserAgent())
         .timeout(CONNECTION_TIMEOUT_MSEC)
-        .get();
+        .cookies(cookies);
 
-    return doc;
+    return connection.get();
   }
 
   protected String getHostname(String urlString) {

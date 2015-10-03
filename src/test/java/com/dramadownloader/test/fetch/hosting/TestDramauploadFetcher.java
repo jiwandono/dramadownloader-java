@@ -1,13 +1,14 @@
 package com.dramadownloader.test.fetch.hosting;
 
 import com.dramadownloader.drama.fetch.hosting.DramauploadHostingPageScraper;
+import com.dramadownloader.drama.fetch.hosting.HostingPageScraper;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TestDramauploadFetcher extends HostingFetcherTestBase {
-  private static final DramauploadHostingPageScraper scraper = new DramauploadHostingPageScraper();
+  private static final HostingPageScraper scraper = new DramauploadHostingPageScraper();
 
   private static final List<String> urls = new ArrayList<>();
   static {

@@ -1,13 +1,14 @@
 package com.dramadownloader.test.fetch.episode;
 
 import com.dramadownloader.drama.fetch.episode.DramaniceEpisodePageScraper;
+import com.dramadownloader.drama.fetch.episode.EpisodePageScraper;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TestDramaniceFetcher extends EpisodeFetcherTestBase {
-  private static final DramaniceEpisodePageScraper scraper = new DramaniceEpisodePageScraper();
+  private static final EpisodePageScraper scraper = new DramaniceEpisodePageScraper();
 
   private static final List<String> urls = new ArrayList<>();
   static {
