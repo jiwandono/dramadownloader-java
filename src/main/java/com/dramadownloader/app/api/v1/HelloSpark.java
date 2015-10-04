@@ -4,6 +4,8 @@ import com.dramadownloader.app.api.v1.monitor.LegacyMongoMonitor;
 import com.dramadownloader.app.api.v1.monitor.LegacyMonitor;
 import com.dramadownloader.common.component.CommonComponent;
 import com.dramadownloader.common.component.MemcachedComponent;
+import com.dramadownloader.common.component.VelocityComponent;
+import com.dramadownloader.common.template.VelocityTemplateEngine;
 import com.dramadownloader.scraper.component.ScraperComponent;
 import com.dramadownloader.scraper.episode.EpisodeScrapeResult;
 import com.dramadownloader.scraper.episode.EpisodeScraper;
@@ -35,13 +37,16 @@ import net.spy.memcached.MemcachedClient;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 import org.mongodb.morphia.Morphia;
+import spark.ModelAndView;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -57,18 +62,39 @@ public class HelloSpark {
   private static final CommonComponent commonComponent = new CommonComponent();
   private static final MemcachedComponent memcachedComponent = new MemcachedComponent();
   private static final ScraperComponent scraperComponent = new ScraperComponent();
+  private static final VelocityComponent velocityComponent = new VelocityComponent();
 
   private static final MemcachedClient memcachedClient = memcachedComponent.getMemcachedClient();
   private static final ObjectMapper objectMapper = commonComponent.getObjectMapper();
+  private static final VelocityTemplateEngine templateEngine = velocityComponent.getVelocityTemplateEngine();
 
   private static final LegacyMonitor LEGACY_MONITOR = new LegacyMongoMonitor(commonComponent.getDbMonitor(), commonComponent.getMorphia());
 
   public static void main(String[] args) {
+    staticFileLocation("/public");
+
+    index();
     helloWorld();
     fetchStreams();
     fetchEpisodes();
     stats();
     passthru();
+  }
+
+  public static void index() {
+    get("/", (request, response) -> {
+      String renderResult;
+      Object cachedResponse = memcachedClient.get("page_index");
+      if(cachedResponse == null) {
+        Map<String, Object> contexts = new HashMap<>();
+        renderResult = templateEngine.render(new ModelAndView(contexts, "views/index.vm"));
+        memcachedClient.set("page_index", 500, renderResult);
+      } else {
+        renderResult = (String) cachedResponse;
+      }
+
+      return renderResult;
+    });
   }
 
   public static void helloWorld() {
