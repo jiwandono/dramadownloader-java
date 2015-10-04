@@ -6,6 +6,10 @@ import com.dramadownloader.common.component.CommonComponent;
 import com.dramadownloader.common.component.MemcachedComponent;
 import com.dramadownloader.common.component.VelocityComponent;
 import com.dramadownloader.common.template.VelocityTemplateEngine;
+import com.dramadownloader.common.util.StringUtil;
+import com.dramadownloader.core.TitleAccessor;
+import com.dramadownloader.core.TitleMongoAccessor;
+import com.dramadownloader.core.model.Title;
 import com.dramadownloader.scraper.component.ScraperComponent;
 import com.dramadownloader.scraper.episode.EpisodeScrapeResult;
 import com.dramadownloader.scraper.episode.EpisodeScraper;
@@ -70,10 +74,14 @@ public class HelloSpark {
 
   private static final LegacyMonitor LEGACY_MONITOR = new LegacyMongoMonitor(commonComponent.getDbMonitor(), commonComponent.getMorphia());
 
+  private static final TitleAccessor titleAccessor = new TitleMongoAccessor(commonComponent.getDbData(), commonComponent.getMorphia());
+
   public static void main(String[] args) {
     staticFileLocation("/public");
 
     index();
+    list();
+    detail();
     helloWorld();
     fetchStreams();
     fetchEpisodes();
@@ -94,6 +102,50 @@ public class HelloSpark {
       }
 
       return renderResult;
+    });
+  }
+
+  public static void list() {
+    get("/list/:prefix", (request, response) -> {
+      String prefix = request.params(":prefix");
+      if(prefix.length() != 1) {
+        response.status(404);
+        return "404 Not found";
+      }
+
+      char first = prefix.charAt(0);
+
+      if((first >= 'a' && first <= 'z') || first == '0') {
+        response.type("application/json");
+        List<Title> titles = titleAccessor.getTitlesByPrefix(prefix);
+        return objectMapper.writeValueAsString(titles);
+      }
+
+      response.status(404);
+      return "404 Not found";
+    });
+  }
+
+  public static void detail() {
+    get("/detail/:id/:slug", (request, response) -> {
+      String id = request.params(":id");
+      String slug = request.params(":slug");
+
+      Title title = titleAccessor.getTitle(id);
+      boolean found = true;
+      if(title == null) {
+        found = false;
+      } else if(!slug.equals(StringUtil.toPrettyUrl(title.getTitle()))) {
+        found = false;
+      }
+
+      if(found) {
+        response.type("application/json");
+        return objectMapper.writeValueAsString(title);
+      } else {
+        response.status(404);
+        return "404 Not found";
+      }
     });
   }
 

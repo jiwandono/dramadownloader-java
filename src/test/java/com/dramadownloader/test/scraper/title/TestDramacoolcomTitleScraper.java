@@ -19,4 +19,9 @@ public class TestDramacoolcomTitleScraper extends TitleScraperTestBase {
   public void testFetch() throws Exception {
     for(String url : urls) testFetchUrl(scraper, url);
   }
+
+  @Test
+  public void populateData() throws Exception {
+    for(String url : urls) populateData(scraper, url);
+  }
 }

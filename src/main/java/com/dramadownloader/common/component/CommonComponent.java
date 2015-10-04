@@ -18,6 +18,7 @@ public class CommonComponent {
   private final ObjectMapper _objectMapper;
   private final Morphia _morphia;
   private final DB _dbMonitor;
+  private final DB _dbData;
 
   public CommonComponent() {
     _scheduledExecutorService = Executors.newScheduledThreadPool(THREAD_POOL_SIZE);
@@ -29,6 +30,7 @@ public class CommonComponent {
 
     MongoClient mongoClient = new MongoClient(MONGO_ADDRESS);
     _dbMonitor = mongoClient.getDB("dramadownloader-monitor");
+    _dbData = mongoClient.getDB("dramadownloader-data");
   }
 
   public ScheduledExecutorService getScheduledExecutorService() {
@@ -45,5 +47,9 @@ public class CommonComponent {
 
   public DB getDbMonitor() {
     return _dbMonitor;
+  }
+
+  public DB getDbData() {
+    return _dbData;
   }
 }
