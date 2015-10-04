@@ -1,27 +1,11 @@
 package com.dramadownloader.scraper.stream;
 
+import com.dramadownloader.scraper.AbstractScraperFactory;
 import com.dramadownloader.scraper.ScraperFactory;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class StreamScraperFactory implements ScraperFactory<StreamScraper> {
-  private final Set<StreamScraper> scrapers;
+public class StreamScraperFactory extends AbstractScraperFactory<StreamScraper> {
 
-  public StreamScraperFactory() {
-    scrapers = new HashSet<>();
-  }
-
-  @Override
-  public StreamScraper getScraper(String url) {
-    for(StreamScraper scraper : scrapers)
-      if(scraper.isSupported(url))
-        return scraper;
-
-    return null;
-  }
-
-  public void register(StreamScraper scraper) {
-    scrapers.add(scraper);
-  }
 }

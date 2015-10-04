@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class Title {
   @Id
-  private long id;
+  private String id;
   private String providerId;
   private Type type;
   private String title;
@@ -17,11 +17,11 @@ public class Title {
   private Set<String> genres = new HashSet<>();
   private CompletionStatus completionStatus;
 
-  public long getId() {
+  public String getId() {
     return id;
   }
 
-  public void setId(long id) {
+  public void setId(String id) {
     this.id = id;
   }
 

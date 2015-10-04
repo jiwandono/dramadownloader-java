@@ -1,7 +1,6 @@
 package com.dramadownloader.scraper.title;
 
-/**
- * Created by jiwan_000 on 04-10-2015.
- */
-public class TitleScraperFactory {
+import com.dramadownloader.scraper.AbstractScraperFactory;
+
+public class TitleScraperFactory extends AbstractScraperFactory<TitleScraper> {
 }

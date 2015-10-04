@@ -1,7 +1,14 @@
 package com.dramadownloader.scraper.title;
 
-/**
- * Created by jiwan_000 on 04-10-2015.
- */
-public class TitleScraper {
+import com.dramadownloader.scraper.AbstractScraper;
+
+import java.io.IOException;
+
+public abstract class TitleScraper extends AbstractScraper<TitleScrapeResult> {
+  @Override
+  public TitleScrapeResult scrape(String url) throws IOException {
+    return null;
+  }
+
+  protected abstract TitleScrapeResult scrapeInternal(String url) throws IOException;
 }

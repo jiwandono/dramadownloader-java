@@ -1,6 +1,6 @@
 package com.dramadownloader.core.model;
 
-public class TitleProvider {
+public class Provider {
   private String providerId;
   private String name;
   private String url;

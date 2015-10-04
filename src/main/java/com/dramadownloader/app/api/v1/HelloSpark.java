@@ -5,6 +5,8 @@ import com.dramadownloader.app.api.v1.monitor.LegacyMonitor;
 import com.dramadownloader.common.component.CommonComponent;
 import com.dramadownloader.common.component.MemcachedComponent;
 import com.dramadownloader.scraper.component.ScraperComponent;
+import com.dramadownloader.scraper.episode.EpisodeScrapeResult;
+import com.dramadownloader.scraper.episode.EpisodeScraper;
 import com.dramadownloader.scraper.stream.AnimestvStreamScraper;
 import com.dramadownloader.scraper.stream.DramacoolcomStreamScraper;
 import com.dramadownloader.scraper.stream.DramafirecomStreamScraper;
@@ -64,6 +66,7 @@ public class HelloSpark {
   public static void main(String[] args) {
     helloWorld();
     fetchStreams();
+    fetchEpisodes();
     stats();
     passthru();
   }
@@ -86,7 +89,7 @@ public class HelloSpark {
       // Check cache
       Object cachedObject = memcachedClient.get("fetchstreams_" + episodeUrl);
       if (cachedObject != null) {
-        LOGGER.info("Found cached response for " + episodeUrl);
+        LOGGER.info("Found cached fetchstreams response for " + episodeUrl);
         FetchStreamsResponse cachedApiResponse = objectMapper.readValue((String) cachedObject, FetchStreamsResponse.class);
         LEGACY_MONITOR.onRequestProcessed(episodeUrl, System.currentTimeMillis(), cachedApiResponse.getStatus().equals(FetchStreamsResponse.Status.OK));
         return objectMapper.writeValueAsString(cachedApiResponse);
@@ -162,6 +165,50 @@ public class HelloSpark {
       }
 
       LEGACY_MONITOR.onRequestProcessed(episodeUrl, System.currentTimeMillis(), apiResponse.getStatus().equals(FetchStreamsResponse.Status.OK));
+
+      return objectMapper.writeValueAsString(apiResponse);
+    });
+  }
+
+  private static void fetchEpisodes() {
+    post("/v1/drama/fetchepisodes", (request, response) -> {
+      response.type("application/json");
+      response.header("Access-Control-Allow-Origin", "*");
+      response.header("Vary", "Origin");
+
+      FetchEpisodesRequest apiRequest = objectMapper.readValue(request.body(), FetchEpisodesRequest.class);
+      FetchEpisodesResponse apiResponse = new FetchEpisodesResponse();
+
+      String titleUrl = apiRequest.getUrl().trim();
+
+      // Check cache
+      Object cachedObject = memcachedClient.get("fetchepisodes_" + titleUrl);
+      if (cachedObject != null) {
+        LOGGER.info("Found cached fetchepisodes response for " + titleUrl);
+        FetchEpisodesResponse cachedApiResponse = objectMapper.readValue((String) cachedObject, FetchEpisodesResponse.class);
+        return objectMapper.writeValueAsString(cachedApiResponse);
+      }
+
+      EpisodeScraper episodeScraper = scraperComponent.getEpisodeScraperFactory().getScraper(titleUrl);
+      if (episodeScraper == null) {
+        apiResponse.setStatus(FetchEpisodesResponse.Status.UNSUPPORTED);
+        return objectMapper.writeValueAsString(apiResponse);
+      }
+
+      EpisodeScrapeResult episodeScrapeResult = episodeScraper.scrape(titleUrl);
+      LOGGER.info("Title URL " + titleUrl + " processed with status " + episodeScrapeResult.getStatus());
+
+      for (EpisodeScrapeResult.Episode episode : episodeScrapeResult.getEpisodes()) {
+        FetchEpisodesResponse.EpisodeDisplay episodeDisplay = new FetchEpisodesResponse.EpisodeDisplay(episode.getTitle(), episode.getUrl());
+        apiResponse.getEpisodes().add(episodeDisplay);
+      }
+
+      if (apiResponse.getEpisodes().size() > 0) {
+        apiResponse.setStatus(FetchEpisodesResponse.Status.OK);
+        memcachedClient.set("fetchepisodes_" + titleUrl, 14400, objectMapper.writeValueAsString(apiResponse));
+      } else {
+        apiResponse.setStatus(FetchEpisodesResponse.Status.FAILED);
+      }
 
       return objectMapper.writeValueAsString(apiResponse);
     });
