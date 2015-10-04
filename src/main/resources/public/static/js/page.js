@@ -62,7 +62,7 @@ $(function() {
 					handleSuccess(downloadables);
 				} else if(response.status == "FAILED") {
 					ga('send', 'event', 'downloads', 'submit-fail-int', url, elapsedMsec);
-					handleFail();
+					handleFail(url);
 				} else {
 					ga('send', 'event', 'downloads', 'submit-unsupported', url, elapsedMsec);
 					handleFail();
@@ -133,10 +133,11 @@ $(function() {
 		createDownloadButtons(downloadables);
 	}
 
-	function handleFail() {
+	function handleFail(url) {
 		$('form input').removeAttr('disabled', 'disabled');
 		$('.result').hide();
 		$('#result-fail').show();
+		$('#origin-url').attr('href', url);
 	}
 
 	function handleUnsupported() {

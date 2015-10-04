@@ -96,7 +96,7 @@ public class HelloSpark {
       if(cachedResponse == null) {
         Map<String, Object> contexts = new HashMap<>();
         renderResult = templateEngine.render(new ModelAndView(contexts, "views/index.vm"));
-        memcachedClient.set("page_index", 500, renderResult);
+        memcachedClient.set("page_index", 60, renderResult);
       } else {
         renderResult = (String) cachedResponse;
       }

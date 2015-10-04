@@ -61,7 +61,7 @@
 
 			<div class="result" id="result-fail">
 				<h2>Oops :(</h2>
-				<p>DramaDownloader.com is unable to find downloadable streams for your request. Please try again in a few minutes.</p>
+				<p>DramaDownloader.com is unable to find downloadable streams for your request. This service depends on the availability of streams on the page you specified. Please try again in a few minutes, or you might want to check the availability <a id="origin-url" href="#" target="_blank">on the originating page</a>.</p>
 				<a class="button button-retry" style="float: right;">RETRY</a>
 				<div class="clear"></div>
 			</div>
