@@ -17,7 +17,8 @@ import java.util.concurrent.ThreadLocalRandom;
 public abstract class AbstractScraper<T> implements Scraper<T> {
   private static final Logger log = Logger.getLogger(AbstractScraper.class);
 
-  private static final int CONNECTION_TIMEOUT_MSEC = 15000;
+  private static final int CONNECTION_TIMEOUT_MSEC = 30000;
+  private static final int MAX_BODY_SIZE = 1024 * 1024 * 8;
   private static final List<String> USER_AGENTS;
 
   static {
@@ -80,6 +81,7 @@ public abstract class AbstractScraper<T> implements Scraper<T> {
     Connection connection = Jsoup.connect(urlObject.toString())
         .userAgent(getRandomUserAgent())
         .timeout(CONNECTION_TIMEOUT_MSEC)
+        .maxBodySize(MAX_BODY_SIZE)
         .cookies(cookies);
 
     return connection.get();

@@ -2,11 +2,12 @@ package com.dramadownloader.scraper.title;
 
 import com.dramadownloader.core.model.Title;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TitleScrapeResult {
   private Status status;
-  private List<Title> titles;
+  private List<Title> titles = new ArrayList<>();
 
   public TitleScrapeResult() {
 
