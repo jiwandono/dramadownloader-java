@@ -126,11 +126,13 @@ $(function() {
 	}
 
 	function handleSuccess(downloadables) {
-		$('form input').removeAttr('disabled', 'disabled');
-		$('.result').hide();
-		$('#result-success').show();
+		setTimeout(function() {
+			$('form input').removeAttr('disabled', 'disabled');
+			$('.result').hide();
+			$('#result-success').show();
 
-		createDownloadButtons(downloadables);
+			createDownloadButtons(downloadables);
+		}, 2000);
 	}
 
 	function handleFail(url) {
