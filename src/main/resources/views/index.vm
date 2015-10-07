@@ -72,10 +72,20 @@
 			</div>
 
 			<div class="info advertisement">
+				<!-- DD Rect 1 -->
 				<ins class="adsbygoogle"
-					 style="display:inline-block;width:728px;height:90px"
-					 data-ad-client="ca-pub-6831380608854697"
-					 data-ad-slot="4298052416"></ins>
+					style="display:inline-block;width:300px;height:250px"
+					data-ad-client="ca-pub-6831380608854697"
+					data-ad-slot="9954228416"></ins>
+				<script>
+				(adsbygoogle = window.adsbygoogle || []).push({});
+				</script>
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				<!-- DD Rect 2 -->
+				<ins class="adsbygoogle"
+					style="display:inline-block;width:300px;height:250px"
+					data-ad-client="ca-pub-6831380608854697"
+					data-ad-slot="2430961618"></ins>
 				<script>
 				(adsbygoogle = window.adsbygoogle || []).push({});
 				</script>
@@ -101,15 +111,14 @@
 			<hr />
 
 			<div class="info advertisement">
-        <!-- Responsive ad -->
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-6831380608854697"
-             data-ad-slot="6380470019"
-             data-ad-format="auto"></ins>
-        <script>
-        (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
+				<!-- DD Rect 3 -->
+				<ins class="adsbygoogle"
+					style="display:inline-block;width:300px;height:250px"
+					data-ad-client="ca-pub-6831380608854697"
+					data-ad-slot="3907694818"></ins>
+				<script>
+				(adsbygoogle = window.adsbygoogle || []).push({});
+				</script>
 			</div>
 
 			<div class="info" id="comments">
