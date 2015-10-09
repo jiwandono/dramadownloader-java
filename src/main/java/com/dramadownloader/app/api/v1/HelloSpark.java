@@ -13,37 +13,16 @@ import com.dramadownloader.core.model.Title;
 import com.dramadownloader.scraper.component.ScraperComponent;
 import com.dramadownloader.scraper.episode.EpisodeScrapeResult;
 import com.dramadownloader.scraper.episode.EpisodeScraper;
-import com.dramadownloader.scraper.stream.AnimestvStreamScraper;
-import com.dramadownloader.scraper.stream.DramacoolcomStreamScraper;
-import com.dramadownloader.scraper.stream.DramafirecomStreamScraper;
-import com.dramadownloader.scraper.stream.DramaniceStreamScraper;
-import com.dramadownloader.scraper.stream.DramatvStreamScraper;
 import com.dramadownloader.scraper.stream.StreamScraper;
-import com.dramadownloader.scraper.stream.StreamScraperFactory;
 import com.dramadownloader.scraper.stream.StreamScrapeResult;
-import com.dramadownloader.scraper.file.DramauploadFileScraper;
-import com.dramadownloader.scraper.file.EmbeddramaFileScraper;
-import com.dramadownloader.scraper.file.GooglevideoFileScraper;
 import com.dramadownloader.scraper.file.FileScraper;
-import com.dramadownloader.scraper.file.FileScraperFactory;
 import com.dramadownloader.scraper.file.FileScrapeResult;
-import com.dramadownloader.scraper.file.Mp4UploadFileScraper;
-import com.dramadownloader.scraper.file.StoragestreamingFileScraper;
-import com.dramadownloader.scraper.file.VideouploadusFileScraper;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.DB;
-import com.mongodb.MongoClient;
-import net.spy.memcached.AddrUtil;
-import net.spy.memcached.BinaryConnectionFactory;
 import net.spy.memcached.MemcachedClient;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
-import org.mongodb.morphia.Morphia;
 import spark.ModelAndView;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
@@ -52,8 +31,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static spark.Spark.*;
@@ -198,7 +175,7 @@ public class HelloSpark {
         commonComponent.getScheduledExecutorService().submit(() -> {
           try {
             FileScrapeResult fileScrapeResult = fileScraper.scrape(streamUrl);
-            if (fileScrapeResult.getStatus().equals(FileScrapeResult.Status.OK)) {
+            if (fileScrapeResult.getFiles().size() > 0) {
               FileScrapeResult.File file = fileScrapeResult.getFiles().get(0);
               synchronized (apiResponse.getLinks()) {
                 FetchStreamsResponse.Link link = new FetchStreamsResponse.Link(streamName, file.getDownloadUrl(), file.isDirectLink());

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
-public abstract class AbstractScraper<T> implements Scraper<T> {
+public abstract class AbstractScraper<T extends ScrapeResult> implements Scraper<T> {
   private static final Logger log = Logger.getLogger(AbstractScraper.class);
 
   private static final int CONNECTION_TIMEOUT_MSEC = 30000;
@@ -63,17 +63,17 @@ public abstract class AbstractScraper<T> implements Scraper<T> {
     USER_AGENTS.add("Opera/9.80 (Windows NT 6.0; U; en) Presto/2.8.99 Version/11.10");
   }
 
-  private String getRandomUserAgent() {
+  private static String getRandomUserAgent() {
     int max = USER_AGENTS.size();
     int index = ThreadLocalRandom.current().nextInt(max);
     return USER_AGENTS.get(index);
   }
 
-  protected Document getDocument(String url) throws IOException {
+  protected static Document getDocument(String url) throws IOException {
     return getDocument(url, new HashMap<>());
   }
 
-  protected Document getDocument(String url, Map<String, String> cookies) throws IOException{
+  protected static Document getDocument(String url, Map<String, String> cookies) throws IOException{
     URL urlObject = createUrl(url);
     if(urlObject == null)
       return new Document("");
@@ -87,7 +87,7 @@ public abstract class AbstractScraper<T> implements Scraper<T> {
     return connection.get();
   }
 
-  protected String getHostname(String urlString) {
+  protected static String getHostname(String urlString) {
     URL url = createUrl(urlString);
     if(url != null)
       return url.getHost().toLowerCase();
@@ -95,7 +95,7 @@ public abstract class AbstractScraper<T> implements Scraper<T> {
     return null;
   }
 
-  protected URL createUrl(String urlString) {
+  private static URL createUrl(String urlString) {
     try {
       return new URL(urlString);
     } catch (MalformedURLException e) {

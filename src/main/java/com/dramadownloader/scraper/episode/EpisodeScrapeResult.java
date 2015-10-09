@@ -1,10 +1,11 @@
 package com.dramadownloader.scraper.episode;
 
+import com.dramadownloader.scraper.ScrapeResult;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class EpisodeScrapeResult {
-  private Status status;
+public class EpisodeScrapeResult extends ScrapeResult {
   private List<Episode> episodes = new ArrayList<>();
 
   public EpisodeScrapeResult() {
@@ -15,26 +16,12 @@ public class EpisodeScrapeResult {
     this.status = status;
   }
 
-  public Status getStatus() {
-    return status;
-  }
-
-  public void setStatus(Status status) {
-    this.status = status;
-  }
-
   public List<Episode> getEpisodes() {
     return episodes;
   }
 
   public void setEpisodes(List<Episode> episodes) {
     this.episodes = episodes;
-  }
-
-  public static enum Status {
-    OK,
-    FAILED,
-    UNSUPPORTED
   }
 
   public static class Episode {
