@@ -12,6 +12,7 @@ public class TestDramacoolcomFetcher extends StreamScraperTestBase {
 
   private static final List<String> urls = new ArrayList<>();
   static {
+    urls.add("http://www.dramacool.com/moon-river-episode-22.html");
     urls.add("http://www.dramacool.com/my-love-from-the-star-episode-3.html");
     urls.add("http://www.dramacool.com/bloody-monday-season-1-episode-1.html");
     urls.add("http://www.dramacool.com/iris-episode-1.html");

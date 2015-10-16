@@ -51,22 +51,16 @@ public class AnimestvStreamScraper extends StreamScraper {
         for(Element script : scripts) {
           for(DataNode dataNode : script.dataNodes()) {
             String actualScript = dataNode.getWholeData();
+            String nospaces = actualScript.replace(" ", "");
             if(actualScript.contains(target)) {
-              // Split the script by whitespaces, look for source url.
-              String[] tokens = actualScript.split(" ");
-              for(String token : tokens) {
-                if(token.startsWith("src=")) {
-                  try {
-                    streamUrl = token.substring(5, token.length() - 1);
-                  } catch (Exception e) {
-                    log.error("Caught exception while parsing " + token, e);
-                  }
-                }
+              int pos1 = nospaces.indexOf("src='");
+              int pos2 = nospaces.indexOf("'", pos1 + 5);
+              if(pos1 != -1 && pos2 != -1 && pos2 > pos1) {
+                streamUrl = nospaces.substring(pos1 + 5, pos2);
               }
             }
 
             if(streamUrl == null) {
-              String nospaces = actualScript.replace(" ", "");
               int pos1 = nospaces.indexOf("file:'");
               int pos2 = nospaces.indexOf("'", pos1 + 6);
               if(pos1 != -1 && pos2 != -1 && pos2 > pos1) {
