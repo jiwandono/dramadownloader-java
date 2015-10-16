@@ -9,6 +9,7 @@ import com.dramadownloader.scraper.file.GooglevideoFileScraper;
 import com.dramadownloader.scraper.file.Mp4UploadFileScraper;
 import com.dramadownloader.scraper.file.StoragestreamingFileScraper;
 import com.dramadownloader.scraper.file.VideouploadusFileScraper;
+import com.dramadownloader.scraper.file.ZippyshareFileScraper;
 import com.dramadownloader.scraper.stream.AnimestvStreamScraper;
 import com.dramadownloader.scraper.stream.DramacoolcomStreamScraper;
 import com.dramadownloader.scraper.stream.DramafirecomStreamScraper;
@@ -31,6 +32,7 @@ public class ScraperComponent {
     _fileScraperFactory.register(new Mp4UploadFileScraper());
     _fileScraperFactory.register(new StoragestreamingFileScraper());
     _fileScraperFactory.register(new VideouploadusFileScraper());
+    _fileScraperFactory.register(new ZippyshareFileScraper());
 
     _streamScraperFactory = new StreamScraperFactory();
     _streamScraperFactory.register(new AnimestvStreamScraper());

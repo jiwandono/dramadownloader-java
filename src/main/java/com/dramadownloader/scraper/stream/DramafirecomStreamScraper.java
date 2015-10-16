@@ -49,6 +49,18 @@ public class DramafirecomStreamScraper extends StreamScraper {
       }
     }
 
+    Elements embeds = doc.select("#main-content .post embed[flashvars]");
+    for(Element embed : embeds) {
+      String flashvars = embed.attr("flashvars");
+      String[] flashvarsSplit = flashvars.split("&");
+      for(String flashvar : flashvarsSplit) {
+        if(flashvar.startsWith("proxy.link=")) {
+          String fileUrl = flashvar.replace("proxy.link=", "");
+          result.getStreams().add(new StreamScrapeResult.Stream("Server " + i++, fileUrl));
+        }
+      }
+    }
+
     if(result.getStreams().size() > 0) {
       result.setStatus(StreamScrapeResult.Status.OK);
     }
