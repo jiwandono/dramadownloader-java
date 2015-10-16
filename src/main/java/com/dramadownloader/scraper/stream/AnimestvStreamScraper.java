@@ -62,6 +62,15 @@ public class AnimestvStreamScraper extends StreamScraper {
                 }
               }
             }
+
+            if(streamUrl == null) {
+              String nospaces = actualScript.replace(" ", "");
+              int pos1 = nospaces.indexOf("file:'");
+              int pos2 = nospaces.indexOf("'", pos1 + 6);
+              if(pos1 != -1 && pos2 != -1 && pos2 > pos1) {
+                streamUrl = nospaces.substring(pos1 + 6, pos2);
+              }
+            }
           }
         }
       }
