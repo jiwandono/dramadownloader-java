@@ -19,6 +19,8 @@ public class AnimestvStreamScraper extends StreamScraper {
     DOMAINS = new HashSet<>();
     DOMAINS.add("animestv.us");
     DOMAINS.add("www.animestv.us");
+    DOMAINS.add("animestv.eu");
+    DOMAINS.add("www.animestv.eu");
     DOMAINS.add("anime4you.net");
     DOMAINS.add("www.anime4you.net");
   }
