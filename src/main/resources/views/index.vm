@@ -2,12 +2,12 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<meta name="description" content="Download Japanese dramas, Korean dramas, Asian dramas, and Animes from Dramacool, Dramatv, Dramafire, Dramanice, Animestv easily." />
-		<meta property="og:title" content="DramaDownloader.com: Download Japanese dramas, Korean dramas, Asian dramas, and Animes from Dramacool, Dramatv, Dramafire, Dramanice, Animestv easily." />
-		<meta property="og:description" content="Download Japanese dramas, Korean dramas, Asian dramas, and Animes from Dramacool, Dramatv, Dramafire, Dramanice, Animestv easily." />
+		<meta name="description" content="Download Japanese dramas, Korean dramas, Asian dramas, and Animes from Dramacool, Dramatv, Dramafire, Dramanice, Gooddrama, Animestv easily." />
+		<meta property="og:title" content="DramaDownloader.com: Download Japanese dramas, Korean dramas, Asian dramas, and Animes from Dramacool, Dramatv, Dramafire, Dramanice, Gooddrama, Animestv easily." />
+		<meta property="og:description" content="Download Japanese dramas, Korean dramas, Asian dramas, and Animes from Dramacool, Dramatv, Dramafire, Dramanice, Gooddrama, Animestv easily." />
 		<meta property="og:url" content="http://dramadownloader.com" />
 
-		<title>DramaDownloader.com: Download Japanese dramas, Korean dramas, Asian dramas, and Animes from Dramacool, Dramatv, Dramafire, Dramanice, Animestv easily.</title>
+		<title>DramaDownloader.com: Download Japanese dramas, Korean dramas, Asian dramas, and Animes from Dramacool, Dramatv, Dramafire, Dramanice, Gooddrama, Animestv easily.</title>
 
 		<link rel="stylesheet" href="static/css/page.css" />
 		<link rel="image_src" href="static/img/logo.png" />
@@ -29,13 +29,13 @@
 		}(document, 'script', 'facebook-jssdk'));</script>
 		<div class="container">
 			<div id="header">
-				<h1><a href="." class="logo" title="Download Japanese dramas, Korean dramas, Asian dramas, and Animes from Dramacool, Dramatv, Dramafire, Dramanice, Animestv easily."></a></h1>
+				<h1><a href="." class="logo" title="Download Japanese dramas, Korean dramas, Asian dramas, and Animes from Dramacool, Dramatv, Dramafire, Dramanice, Gooddrama, Animestv easily."></a></h1>
 			</div>
 
 			<div class="clear"></div>
 
 			<div id="site-description">
-				<h2>Download Japanese dramas, Korean dramas, Asian dramas, and Animes from Dramacool, Dramatv, Dramafire, Dramanice, Animestv easily.</h2>
+				<h2>Download Japanese dramas, Korean dramas, Asian dramas, and Animes from Dramacool, Dramatv, Dramafire, Dramanice, Gooddrama, Animestv easily.</h2>
 			</div>
 
 			<div id="content">
@@ -104,7 +104,7 @@
 
 			<div class="info" id="supported-sites">
 				<h2>Supported sites</h2>
-				<p>DramaDownloader.com supports downloading from Dramacool, Dramatv, Dramafire, Dramanice, Animestv.</p>
+				<p>DramaDownloader.com supports downloading from Dramacool, Dramatv, Dramafire, Dramanice, Gooddrama, Animestv.</p>
 			</div>
 
 			<div class="info" id="errors">
@@ -112,6 +112,7 @@
 				<p>We're trying our best to provide the best service for you to easily download video streams. However, there are too many video streams to make sure that you can download them without problems. If you experience any problems, try these steps.</p>
 				<ol>
 					<li>Make sure your URL is correct and the streaming site is supported.</li>
+          <li>Make sure you can actually play the video on the streaming site.</li>
 					<li>Most of the time, problems are temporary (network hiccups, timeouts, etc). Try resubmitting your URL after a few minutes. You can also try downloading with another browser.</li>
 					<li>If you're sure that the URL is correct and the streaming site is supported, please post the URL in the comment section below.</li>
 				</ol>
@@ -149,15 +150,16 @@
 
 			<div class="info" id="footer">
 				<ul class="footer-links">
-					<li class="head">JDrama and KDrama Videos</li>
+					<li class="head">JDrama, KDrama, various Asian Drama Videos</li>
 					<li><a href="http://blog.dramadownloader.com/how-to-download-from-dramacool-tv/">Download from Dramatv.co</a></li>
 					<li><a href="http://blog.dramadownloader.com/how-to-download-www-dramacool-com-videos/">Download from Dramacool.com</a></li>
 					<li><a href="http://blog.dramadownloader.com/how-to-download-from-dramafire-com/">Download from DramaFire.com</a></li>
 					<li><a href="http://blog.dramadownloader.com/how-to-download-from-dramacool-tv/">Download from Dramacool.tv</a></li>
+          <li><a href="http://blog.dramadownloader.com/how-to-download-videos-from-gooddrama/">Download from Gooddrama.net</a></li>
 				</ul>
 				<ul class="footer-links">
 					<li class="head">Anime Videos</li>
-					<li><a href="http://blog.dramadownloader.com/download-anime4you-net-videos/">Download from Animestv.us</a></li>
+					<li><a href="http://blog.dramadownloader.com/download-anime4you-net-videos/">Download from Animestv.eu</a></li>
 				</ul>
 				<ul class="footer-links">
 
