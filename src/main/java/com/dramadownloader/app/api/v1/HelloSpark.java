@@ -35,6 +35,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -169,6 +170,8 @@ public class HelloSpark {
       LOGGER.info("URL " + episodeUrl + " processed with status " + streamScrapeResult.getStatus());
 
       CountDownLatch countDownLatch = new CountDownLatch(streamScrapeResult.getStreams().size());
+      int seqNo = 1;
+      Map<Integer, FetchStreamsResponse.Link> links = new TreeMap<>();
       for (StreamScrapeResult.Stream stream : streamScrapeResult.getStreams()) {
         final String streamName = stream.getStreamName();
         final String streamUrl = stream.getStreamUrl();
@@ -180,6 +183,7 @@ public class HelloSpark {
           continue;
         }
 
+        Integer localSeqNo = seqNo;
         commonComponent.getScheduledExecutorService().submit(() -> {
           try {
             FileScrapeResult fileScrapeResult = fileScraper.scrape(streamUrl);
@@ -187,7 +191,7 @@ public class HelloSpark {
               FileScrapeResult.File file = fileScrapeResult.getFiles().get(0);
               synchronized (apiResponse.getLinks()) {
                 FetchStreamsResponse.Link link = new FetchStreamsResponse.Link(streamName, file.getDownloadUrl(), file.isDirectLink());
-                apiResponse.getLinks().add(link);
+                links.put(localSeqNo, link);
               }
             }
           } catch (Exception e) {
@@ -196,8 +200,10 @@ public class HelloSpark {
             countDownLatch.countDown();
           }
         });
+        seqNo++;
       }
       countDownLatch.await(FETCH_TIMEOUT_MSEC, TimeUnit.MILLISECONDS);
+      apiResponse.getLinks().addAll(links.values());
 
       if (apiResponse.getLinks().size() > 0) {
         apiResponse.setStatus(FetchStreamsResponse.Status.OK);
