@@ -6,8 +6,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -93,6 +95,45 @@ public abstract class AbstractScraper<T extends ScrapeResult> implements Scraper
       return url.getHost().toLowerCase();
 
     return null;
+  }
+
+  protected static String getFinalUrl(String url) throws IOException {
+    HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
+    con.setInstanceFollowRedirects(false);
+    con.connect();
+    con.getInputStream();
+
+    if(con.getResponseCode() == HttpURLConnection.HTTP_MOVED_PERM || con.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP) {
+      String redirectUrl = con.getHeaderField("Location");
+      return getFinalUrl(redirectUrl);
+    }
+
+    return url;
+  }
+
+  protected static Map<String, List<String>> getQueryParams(String url) throws IOException {
+    Map<String, List<String>> params = new HashMap<>();
+    String[] urlParts = url.split("\\?");
+    if (urlParts.length > 1) {
+      String query = urlParts[1];
+      for (String param : query.split("&")) {
+        String[] pair = param.split("=");
+        String key = URLDecoder.decode(pair[0], "UTF-8");
+        String value = "";
+        if (pair.length > 1) {
+          value = URLDecoder.decode(pair[1], "UTF-8");
+        }
+
+        List<String> values = params.get(key);
+        if (values == null) {
+          values = new ArrayList<>();
+          params.put(key, values);
+        }
+        values.add(value);
+      }
+    }
+
+    return params;
   }
 
   private static URL createUrl(String urlString) {
