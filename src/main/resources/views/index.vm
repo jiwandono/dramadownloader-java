@@ -93,6 +93,15 @@
 
 			<hr />
 
+			<div class="info" id="top-x">
+				<h2>Most Downloaded Last Hour</h2>
+				<ul>
+				#foreach($url in $topUrls)
+					<li><a href="/?url=$esc.url($url)&ref=topn">$url</a></li>
+				#end
+				</ul>
+			</div>
+
 			<div class="info" id="supported-sites">
 				<h2>Supported sites</h2>
 				<p>DramaDownloader.com supports downloading from Dramacool, Dramatv, Dramafire, Dramanice, Animestv.</p>

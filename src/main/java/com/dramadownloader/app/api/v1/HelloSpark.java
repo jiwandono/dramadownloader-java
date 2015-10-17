@@ -2,6 +2,7 @@ package com.dramadownloader.app.api.v1;
 
 import com.dramadownloader.app.api.v1.monitor.LegacyMongoMonitor;
 import com.dramadownloader.app.api.v1.monitor.LegacyMonitor;
+import com.dramadownloader.app.api.v1.monitor.LegacyMonitorEntry;
 import com.dramadownloader.common.component.CommonComponent;
 import com.dramadownloader.common.component.MemcachedComponent;
 import com.dramadownloader.common.component.VelocityComponent;
@@ -21,17 +22,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.spy.memcached.MemcachedClient;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
+import org.apache.velocity.tools.generic.EscapeTool;
 import spark.ModelAndView;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static spark.Spark.*;
 
@@ -49,7 +55,7 @@ public class HelloSpark {
   private static final ObjectMapper objectMapper = commonComponent.getObjectMapper();
   private static final VelocityTemplateEngine templateEngine = velocityComponent.getVelocityTemplateEngine();
 
-  private static final LegacyMonitor LEGACY_MONITOR = new LegacyMongoMonitor(commonComponent.getDbMonitor(), commonComponent.getMorphia());
+  private static final LegacyMonitor legacyMonitor = new LegacyMongoMonitor(commonComponent.getDbMonitor(), commonComponent.getMorphia());
 
   private static final TitleAccessor titleAccessor = new TitleMongoAccessor(commonComponent.getDbData(), commonComponent.getMorphia());
 
@@ -72,6 +78,8 @@ public class HelloSpark {
       Object cachedResponse = memcachedClient.get("page_index");
       if(cachedResponse == null) {
         Map<String, Object> contexts = new HashMap<>();
+        contexts.put("esc", new EscapeTool());
+        contexts.put("topUrls", getTopN(5));
         renderResult = templateEngine.render(new ModelAndView(contexts, "views/index.vm"));
         memcachedClient.set("page_index", 60, renderResult);
       } else {
@@ -146,14 +154,14 @@ public class HelloSpark {
       if (cachedObject != null) {
         LOGGER.info("Found cached fetchstreams response for " + episodeUrl);
         FetchStreamsResponse cachedApiResponse = objectMapper.readValue((String) cachedObject, FetchStreamsResponse.class);
-        LEGACY_MONITOR.onRequestProcessed(episodeUrl, System.currentTimeMillis(), cachedApiResponse.getStatus().equals(FetchStreamsResponse.Status.OK));
+        legacyMonitor.onRequestProcessed(episodeUrl, System.currentTimeMillis(), cachedApiResponse.getStatus().equals(FetchStreamsResponse.Status.OK));
         return objectMapper.writeValueAsString(cachedApiResponse);
       }
 
       StreamScraper streamScraper = scraperComponent.getStreamScraperFactory().getScraper(episodeUrl);
       if (streamScraper == null) {
         apiResponse.setStatus(FetchStreamsResponse.Status.UNSUPPORTED);
-        LEGACY_MONITOR.onRequestProcessed(episodeUrl, System.currentTimeMillis(), apiResponse.getStatus().equals(FetchStreamsResponse.Status.OK));
+        legacyMonitor.onRequestProcessed(episodeUrl, System.currentTimeMillis(), apiResponse.getStatus().equals(FetchStreamsResponse.Status.OK));
         return objectMapper.writeValueAsString(apiResponse);
       }
 
@@ -219,7 +227,7 @@ public class HelloSpark {
         memcachedClient.set("fetchstreams_" + episodeUrl, 3600, objectMapper.writeValueAsString(apiResponse));
       }
 
-      LEGACY_MONITOR.onRequestProcessed(episodeUrl, System.currentTimeMillis(), apiResponse.getStatus().equals(FetchStreamsResponse.Status.OK));
+      legacyMonitor.onRequestProcessed(episodeUrl, System.currentTimeMillis(), apiResponse.getStatus().equals(FetchStreamsResponse.Status.OK));
 
       return objectMapper.writeValueAsString(apiResponse);
     });
@@ -276,7 +284,7 @@ public class HelloSpark {
       response.header("Vary", "Origin");
 
       long minTimestamp = System.currentTimeMillis() - 3600_000L;
-      return objectMapper.writeValueAsString(LEGACY_MONITOR.getEntries(minTimestamp));
+      return objectMapper.writeValueAsString(legacyMonitor.getEntries(minTimestamp));
     });
   }
 
@@ -302,5 +310,67 @@ public class HelloSpark {
 
       return response.raw();
     });
+  }
+
+  private static List<String> getTopN(int n) throws IOException {
+    List<LegacyMonitorEntry> entries = legacyMonitor.getEntries(System.currentTimeMillis() - 3600_000);
+    Map<String, Integer> urlCountMap = new HashMap<>();
+    entries.stream().filter(LegacyMonitorEntry::isSuccess).forEach(entry -> {
+      if (urlCountMap.get(entry.getUrl()) == null) {
+        urlCountMap.put(entry.getUrl(), 1);
+      } else {
+        urlCountMap.put(entry.getUrl(), urlCountMap.get(entry.getUrl()) + 1);
+      }
+    });
+
+    List<UrlCount> urlCounts = urlCountMap.keySet()
+        .stream()
+        .map(key -> new UrlCount(key, urlCountMap.get(key)))
+        .collect(Collectors.toList());
+
+    Collections.sort(urlCounts, new Comparator<UrlCount>() {
+      @Override
+      public int compare(UrlCount o1, UrlCount o2) {
+        return -Integer.compare(o1.getCount(), o2.getCount());
+      }
+    });
+
+    List<String> sortedUrls = urlCounts
+        .stream()
+        .map(UrlCount::getUrl)
+        .limit(n)
+        .collect(Collectors.toList());
+
+    return sortedUrls;
+  }
+
+  private static class UrlCount {
+    private String url;
+    private int count;
+
+    public UrlCount() {
+
+    }
+
+    public UrlCount(String url, int count) {
+      this.url = url;
+      this.count = count;
+    }
+
+    public String getUrl() {
+      return url;
+    }
+
+    public void setUrl(String url) {
+      this.url = url;
+    }
+
+    public int getCount() {
+      return count;
+    }
+
+    public void setCount(int count) {
+      this.count = count;
+    }
   }
 }
