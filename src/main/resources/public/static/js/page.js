@@ -56,10 +56,9 @@ $(function() {
 					// no-op
 				}
 
-				var downloadables = response.links;
 				if(response.status == "OK") {
 					ga('send', 'event', 'downloads', 'submit-success', url, elapsedMsec);
-					handleSuccess(downloadables);
+					handleSuccess(response);
 				} else if(response.status == "FAILED") {
 					ga('send', 'event', 'downloads', 'submit-fail-int', url, elapsedMsec);
 					handleFail(url);
@@ -125,13 +124,18 @@ $(function() {
 		}
 	}
 
-	function handleSuccess(downloadables) {
+	function handleSuccess(response) {
 		setTimeout(function() {
 			$('form input').removeAttr('disabled', 'disabled');
 			$('.result').hide();
 			$('#result-success').show();
 
-			createDownloadButtons(downloadables);
+			if(response.title) {
+				$("#download-title").text(response.title);
+				document.title = response.title + " - DramaDownloader.com";
+			}
+
+			createDownloadButtons(response.links);
 		}, 2000);
 	}
 

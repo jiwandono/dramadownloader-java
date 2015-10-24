@@ -206,6 +206,7 @@ public class HelloSpark {
       }
       countDownLatch.await(FETCH_TIMEOUT_MSEC, TimeUnit.MILLISECONDS);
       apiResponse.getLinks().addAll(links.values());
+      apiResponse.setTitle(streamScrapeResult.getTitle());
 
       if (apiResponse.getLinks().size() > 0) {
         apiResponse.setStatus(FetchStreamsResponse.Status.OK);

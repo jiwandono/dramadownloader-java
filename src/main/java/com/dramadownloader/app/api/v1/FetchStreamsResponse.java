@@ -6,6 +6,7 @@ import java.util.List;
 public class FetchStreamsResponse {
   private Status status;
   private List<Link> links = new ArrayList<>();
+  private String title;
 
   public Status getStatus() {
     return status;
@@ -21,6 +22,14 @@ public class FetchStreamsResponse {
 
   public void setLinks(List<Link> links) {
     this.links = links;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
   }
 
   public static enum Status {
