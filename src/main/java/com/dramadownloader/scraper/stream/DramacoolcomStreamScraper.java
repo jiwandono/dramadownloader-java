@@ -1,5 +1,6 @@
 package com.dramadownloader.scraper.stream;
 
+import com.dramadownloader.common.util.StringUtil;
 import org.apache.log4j.Logger;
 import org.jsoup.nodes.DataNode;
 import org.jsoup.nodes.Document;
@@ -74,6 +75,11 @@ public class DramacoolcomStreamScraper extends StreamScraper {
       if(streamUrl != null) {
         result.getStreams().add(new StreamScrapeResult.Stream(name, streamUrl));
       }
+    }
+
+    String title = doc.select(".title-detail-ep-film h1").first().text().trim();
+    if(!StringUtil.isNullOrEmpty(title)) {
+      result.setTitle(title);
     }
 
     if(result.getStreams().size() > 0) {

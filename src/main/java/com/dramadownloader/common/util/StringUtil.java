@@ -12,4 +12,8 @@ public final class StringUtil {
         .replaceAll("\\p{InCombiningDiacriticalMarks}+", "")
         .replaceAll("[^\\p{Alnum}]+", "-");
   }
+
+  public static boolean isNullOrEmpty(String string) {
+    return string == null || string.isEmpty();
+  }
 }

@@ -1,5 +1,6 @@
 package com.dramadownloader.scraper.stream;
 
+import com.dramadownloader.common.util.StringUtil;
 import org.jsoup.nodes.DataNode;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -61,6 +62,11 @@ public class DramafirecomStreamScraper extends StreamScraper {
           result.getStreams().add(new StreamScrapeResult.Stream("Server " + i++, fileUrl));
         }
       }
+    }
+
+    String title = doc.select("h1.title").first().text().trim();
+    if(!StringUtil.isNullOrEmpty(title)) {
+      result.setTitle(title);
     }
 
     if(result.getStreams().size() > 0) {

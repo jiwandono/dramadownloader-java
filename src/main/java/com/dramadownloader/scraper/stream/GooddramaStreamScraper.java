@@ -1,5 +1,6 @@
 package com.dramadownloader.scraper.stream;
 
+import com.dramadownloader.common.util.StringUtil;
 import org.apache.log4j.Logger;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -54,6 +55,7 @@ public class GooddramaStreamScraper extends StreamScraper {
     for(playlistIdx = 0; playlistIdx < iframes.size(); playlistIdx++) {
       String src = iframes.get(playlistIdx).attr("src");
       String hostname = getHostname(src);
+      assert hostname != null;
       if(hostname.contains("easyvideo.me")) {
         goodPlaylists.add(playlistIdx);
       } else {
@@ -100,6 +102,11 @@ public class GooddramaStreamScraper extends StreamScraper {
       }
 
       result.getStreams().addAll(streams.values());
+    }
+
+    String title = doc.select("#top_block h1").first().text().trim();
+    if(!StringUtil.isNullOrEmpty(title)) {
+      result.setTitle(title);
     }
 
     if(result.getStreams().size() > 0) {

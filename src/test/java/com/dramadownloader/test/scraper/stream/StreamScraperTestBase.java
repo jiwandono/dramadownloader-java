@@ -7,7 +7,7 @@ import org.junit.Assert;
 
 public abstract class StreamScraperTestBase {
   protected void printFetchResult(StreamScrapeResult result) {
-    System.out.println(result.getStatus());
+    System.out.println(result.getStatus() + ": " + result.getTitle());
     for(StreamScrapeResult.Stream stream : result.getStreams()) {
       System.out.println(stream.getStreamName() + ": " + stream.getStreamUrl());
     }

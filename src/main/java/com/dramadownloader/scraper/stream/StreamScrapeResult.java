@@ -7,6 +7,7 @@ import java.util.List;
 
 public class StreamScrapeResult extends ScrapeResult {
   private List<Stream> streams = new ArrayList<>();
+  private String title;
 
   public StreamScrapeResult() {
 
@@ -22,6 +23,14 @@ public class StreamScrapeResult extends ScrapeResult {
 
   public void setStreams(List<Stream> streams) {
     this.streams = streams;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
   }
 
   public static class Stream {
