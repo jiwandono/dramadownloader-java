@@ -34,7 +34,6 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -337,12 +336,7 @@ public class HelloSpark {
         .map(key -> new UrlCount(key, urlCountMap.get(key)))
         .collect(Collectors.toList());
 
-    Collections.sort(urlCounts, new Comparator<UrlCount>() {
-      @Override
-      public int compare(UrlCount o1, UrlCount o2) {
-        return -Integer.compare(o1.getCount(), o2.getCount());
-      }
-    });
+    Collections.sort(urlCounts, (o1, o2) -> -Integer.compare(o1.getCount(), o2.getCount()));
 
     List<String> sortedUrls = urlCounts
         .stream()
