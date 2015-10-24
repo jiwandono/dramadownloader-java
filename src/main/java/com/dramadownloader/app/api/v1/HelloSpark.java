@@ -177,6 +177,7 @@ public class HelloSpark {
       for (StreamScrapeResult.Stream stream : streamScrapeResult.getStreams()) {
         final String streamName = stream.getStreamName();
         final String streamUrl = stream.getStreamUrl();
+        final String streamTitle = streamScrapeResult.getTitle();
         LOGGER.info("Processing stream " + streamName + " - " + stream.getStreamUrl());
 
         final FileScraper fileScraper = scraperComponent.getFileScraperFactory().getScraper(streamUrl);
@@ -188,7 +189,7 @@ public class HelloSpark {
         Integer localSeqNo = seqNo;
         commonComponent.getScheduledExecutorService().submit(() -> {
           try {
-            FileScrapeResult fileScrapeResult = fileScraper.scrape(new FileScrapeRequest(streamUrl));
+            FileScrapeResult fileScrapeResult = fileScraper.scrape(new FileScrapeRequest(streamUrl, streamTitle));
             if (fileScrapeResult.getFiles().size() > 0) {
               FileScrapeResult.File file = fileScrapeResult.getFiles().get(0);
               synchronized (apiResponse.getLinks()) {

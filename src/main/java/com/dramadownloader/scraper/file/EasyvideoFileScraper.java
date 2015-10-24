@@ -41,9 +41,10 @@ public class EasyvideoFileScraper extends FileScraper {
         if(pos1 != -1 && pos2 != -1 && pos2 > pos1) {
           String fileUrl = nospaces.substring(pos1 + 5, pos2);
 
-          if(fileUrl.contains("googleusercontent.com/")) {
-            fileUrl = getFinalUrl(fileUrl);
-          }
+          // This won't work because the final URL is IP-restricted.
+          // if(fileUrl.contains("googleusercontent.com/")) {
+          //   fileUrl = getFinalUrl(fileUrl);
+          // }
 
           if(fileUrl.contains("googlevideo.com/")) {
             fileUrl += "&title=" + URLEncoder.encode(origFileBasename, "UTF-8");
