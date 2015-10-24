@@ -26,6 +26,10 @@ public class GooddramaStreamScraper extends StreamScraper {
     DOMAINS = new HashSet<>();
     DOMAINS.add("gooddrama.net");
     DOMAINS.add("www.gooddrama.net");
+    DOMAINS.add("dramagalaxy.eu");
+    DOMAINS.add("www.dramagalaxy.eu");
+    DOMAINS.add("dramago.com");
+    DOMAINS.add("www.dramago.com");
   }
 
   private final ScheduledExecutorService _scheduledExecutorService;
