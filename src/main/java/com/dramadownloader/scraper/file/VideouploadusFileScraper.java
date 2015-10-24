@@ -18,9 +18,12 @@ public class VideouploadusFileScraper extends FileScraper {
   }
 
   @Override
-  protected FileScrapeResult scrapeInternal(String url) throws IOException {
+  protected FileScrapeResult scrapeInternal(FileScrapeRequest request) throws IOException {
     // URL is usually in http://videoupload.us/drama/embed-MTU5NDI=.html format.
     // Just change embed- to video- then it will show a page with download link.
+
+    String url = request.getUrl();
+
     FileScrapeResult result = new FileScrapeResult(FileScrapeResult.Status.FAILED);
 
     if(url.contains("videoupload.us/drama/video")) {

@@ -14,9 +14,12 @@ public class Mp4UploadFileScraper extends FileScraper {
   }
 
   @Override
-  protected FileScrapeResult scrapeInternal(String url) throws IOException {
+  protected FileScrapeResult scrapeInternal(FileScrapeRequest request) throws IOException {
     // URL is usually in http://www.mp4upload.com/embed-cyyg0nztqbyh.html format.
     // Just remove the embed- part then it will show a page with download link.
+
+    String url = request.getUrl();
+
     FileScrapeResult result = new FileScrapeResult(FileScrapeResult.Status.FAILED);
 
     if(url.contains("mp4upload.com/embed-")) {

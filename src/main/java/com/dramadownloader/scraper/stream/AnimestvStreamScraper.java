@@ -26,7 +26,9 @@ public class AnimestvStreamScraper extends StreamScraper {
   }
 
   @Override
-  protected StreamScrapeResult scrapeInternal(String url) throws IOException {
+  protected StreamScrapeResult scrapeInternal(StreamScrapeRequest request) throws IOException {
+    String url = request.getUrl();
+
     StreamScrapeResult result = new StreamScrapeResult(StreamScrapeResult.Status.FAILED);
 
     Document doc = getDocument(url);

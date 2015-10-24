@@ -4,14 +4,16 @@ import com.dramadownloader.scraper.AbstractScraper;
 
 import java.io.IOException;
 
-public abstract class EpisodeScraper extends AbstractScraper<EpisodeScrapeResult> {
+public abstract class EpisodeScraper extends AbstractScraper<EpisodeScrapeRequest, EpisodeScrapeResult> {
   @Override
-  public EpisodeScrapeResult scrape(String url) throws IOException {
+  public EpisodeScrapeResult scrape(EpisodeScrapeRequest request) throws IOException {
+    String url = request.getUrl();
+
     if(!isSupported(url))
       return new EpisodeScrapeResult(EpisodeScrapeResult.Status.UNSUPPORTED);
 
-    return scrapeInternal(url);
+    return scrapeInternal(request);
   }
 
-  protected abstract EpisodeScrapeResult scrapeInternal(String url) throws IOException;
+  protected abstract EpisodeScrapeResult scrapeInternal(EpisodeScrapeRequest request) throws IOException;
 }

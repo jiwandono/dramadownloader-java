@@ -20,7 +20,9 @@ public class EasyvideoFileScraper extends FileScraper {
   }
 
   @Override
-  protected FileScrapeResult scrapeInternal(String url) throws IOException {
+  protected FileScrapeResult scrapeInternal(FileScrapeRequest request) throws IOException {
+    String url = request.getUrl();
+
     FileScrapeResult result = new FileScrapeResult(FileScrapeResult.Status.FAILED);
 
     // Direct link is usually in "url: 'http://blahblah/blah/blah.mp4'" format, inside script tag.

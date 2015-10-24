@@ -21,9 +21,11 @@ public class EmbeddramaFileScraper extends FileScraper {
   }
 
   @Override
-  protected FileScrapeResult scrapeInternal(String url) throws IOException {
+  protected FileScrapeResult scrapeInternal(FileScrapeRequest request) throws IOException {
     // Video download URL is usually embedded in the link, base64-encoded in the GET url query.
     // Decode the encoded part to get download link.
+
+    String url = request.getUrl();
 
     FileScrapeResult result = new FileScrapeResult(FileScrapeResult.Status.FAILED);
 

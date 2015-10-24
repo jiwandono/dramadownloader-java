@@ -12,8 +12,11 @@ import com.dramadownloader.core.TitleAccessor;
 import com.dramadownloader.core.TitleMongoAccessor;
 import com.dramadownloader.core.model.Title;
 import com.dramadownloader.scraper.component.ScraperComponent;
+import com.dramadownloader.scraper.episode.EpisodeScrapeRequest;
 import com.dramadownloader.scraper.episode.EpisodeScrapeResult;
 import com.dramadownloader.scraper.episode.EpisodeScraper;
+import com.dramadownloader.scraper.file.FileScrapeRequest;
+import com.dramadownloader.scraper.stream.StreamScrapeRequest;
 import com.dramadownloader.scraper.stream.StreamScraper;
 import com.dramadownloader.scraper.stream.StreamScrapeResult;
 import com.dramadownloader.scraper.file.FileScraper;
@@ -166,7 +169,7 @@ public class HelloSpark {
         return objectMapper.writeValueAsString(apiResponse);
       }
 
-      StreamScrapeResult streamScrapeResult = streamScraper.scrape(episodeUrl);
+      StreamScrapeResult streamScrapeResult = streamScraper.scrape(new StreamScrapeRequest(episodeUrl));
       LOGGER.info("URL " + episodeUrl + " processed with status " + streamScrapeResult.getStatus());
 
       CountDownLatch countDownLatch = new CountDownLatch(streamScrapeResult.getStreams().size());
@@ -186,7 +189,7 @@ public class HelloSpark {
         Integer localSeqNo = seqNo;
         commonComponent.getScheduledExecutorService().submit(() -> {
           try {
-            FileScrapeResult fileScrapeResult = fileScraper.scrape(streamUrl);
+            FileScrapeResult fileScrapeResult = fileScraper.scrape(new FileScrapeRequest(streamUrl));
             if (fileScrapeResult.getFiles().size() > 0) {
               FileScrapeResult.File file = fileScrapeResult.getFiles().get(0);
               synchronized (apiResponse.getLinks()) {
@@ -264,7 +267,7 @@ public class HelloSpark {
         return objectMapper.writeValueAsString(apiResponse);
       }
 
-      EpisodeScrapeResult episodeScrapeResult = episodeScraper.scrape(titleUrl);
+      EpisodeScrapeResult episodeScrapeResult = episodeScraper.scrape(new EpisodeScrapeRequest(titleUrl));
       LOGGER.info("Title URL " + titleUrl + " processed with status " + episodeScrapeResult.getStatus());
 
       for (EpisodeScrapeResult.Episode episode : episodeScrapeResult.getEpisodes()) {

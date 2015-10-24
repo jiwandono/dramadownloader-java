@@ -19,7 +19,9 @@ public class DramacoolcomTitleScraper extends TitleScraper {
   }
 
   @Override
-  protected TitleScrapeResult scrapeInternal(String url) throws IOException {
+  protected TitleScrapeResult scrapeInternal(TitleScrapeRequest request) throws IOException {
+    String url = request.getUrl();
+
     TitleScrapeResult result = new TitleScrapeResult(TitleScrapeResult.Status.FAILED);
 
     Document doc = getDocument(url);

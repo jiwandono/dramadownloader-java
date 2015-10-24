@@ -5,6 +5,7 @@ import com.dramadownloader.common.util.StringUtil;
 import com.dramadownloader.core.TitleAccessor;
 import com.dramadownloader.core.TitleMongoAccessor;
 import com.dramadownloader.core.model.Title;
+import com.dramadownloader.scraper.title.TitleScrapeRequest;
 import com.dramadownloader.scraper.title.TitleScrapeResult;
 import com.dramadownloader.scraper.title.TitleScraper;
 import com.mongodb.DuplicateKeyException;
@@ -23,14 +24,14 @@ public abstract class TitleScraperTestBase {
 
   protected void testFetchUrl(TitleScraper scraper, String url) throws Exception {
     System.out.println(url);
-    TitleScrapeResult result = scraper.scrape(url);
+    TitleScrapeResult result = scraper.scrape(new TitleScrapeRequest(url));
     Assert.assertEquals(TitleScrapeResult.Status.OK, result.getStatus());
     printFetchResult(result);
   }
 
   protected void populateData(TitleScraper scraper, String url) throws Exception {
     System.out.println(url);
-    TitleScrapeResult result = scraper.scrape(url);
+    TitleScrapeResult result = scraper.scrape(new TitleScrapeRequest(url));
     for(Title title : result.getTitles()) {
       try {
         _titleAccessor.insertTitle(title);

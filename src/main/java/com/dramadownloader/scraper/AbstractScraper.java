@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
-public abstract class AbstractScraper<T extends ScrapeResult> implements Scraper<T> {
+public abstract class AbstractScraper<TRequest extends ScrapeRequest, TResult extends ScrapeResult> implements Scraper<TRequest, TResult> {
   private static final Logger log = Logger.getLogger(AbstractScraper.class);
 
   private static final int CONNECTION_TIMEOUT_MSEC = 30000;

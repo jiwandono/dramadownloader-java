@@ -18,7 +18,9 @@ public class DramacoolcomEpisodeScraper extends EpisodeScraper {
   }
 
   @Override
-  protected EpisodeScrapeResult scrapeInternal(String url) throws IOException {
+  protected EpisodeScrapeResult scrapeInternal(EpisodeScrapeRequest request) throws IOException {
+    String url = request.getUrl();
+
     EpisodeScrapeResult result = new EpisodeScrapeResult(EpisodeScrapeResult.Status.FAILED);
 
     Document doc = getDocument(url);

@@ -13,7 +13,9 @@ public class ZippyshareFileScraper extends FileScraper {
   }
 
   @Override
-  protected FileScrapeResult scrapeInternal(String url) throws IOException {
+  protected FileScrapeResult scrapeInternal(FileScrapeRequest request) throws IOException {
+    String url = request.getUrl();
+
     FileScrapeResult result = new FileScrapeResult(FileScrapeResult.Status.OK);
     result.getFiles().add(new FileScrapeResult.File(url, false));
 
