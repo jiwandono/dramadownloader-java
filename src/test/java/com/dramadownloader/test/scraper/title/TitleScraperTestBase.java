@@ -35,9 +35,9 @@ public abstract class TitleScraperTestBase {
     for(Title title : result.getTitles()) {
       try {
         _titleAccessor.upsertTitle(title);
-        System.out.println("Inserting entry: " + title.getId() + " - " + title.getUrl() + " - " + title.getId() + "/" + StringUtil.toPrettyUrl(title.getTitle()));
+        System.out.println("Inserting entry: " + title.getId() + " - " + title.getUrl() + " - " + title.getId() + "/" + StringUtil.urlize(title.getTitle()));
       } catch (DuplicateKeyException e) {
-        System.out.println("Duplicate entry: " + title.getId() + " - " + title.getUrl() + " - " + title.getId() + "/" + StringUtil.toPrettyUrl(title.getTitle()));
+        System.out.println("Duplicate entry: " + title.getId() + " - " + title.getUrl() + " - " + title.getId() + "/" + StringUtil.urlize(title.getTitle()));
       }
     }
   }

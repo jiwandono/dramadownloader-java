@@ -123,7 +123,7 @@ public class HelloSpark {
       boolean found = true;
       if(title == null) {
         found = false;
-      } else if(!slug.equals(StringUtil.toPrettyUrl(title.getTitle()))) {
+      } else if(!slug.equals(StringUtil.urlize(title.getTitle()))) {
         found = false;
       }
 
