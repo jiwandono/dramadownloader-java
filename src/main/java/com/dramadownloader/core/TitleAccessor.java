@@ -10,7 +10,5 @@ public interface TitleAccessor {
 
   List<Title> getTitlesByPrefix(String prefix) throws IOException;
 
-  void insertTitle(Title title) throws IOException;
-
   void upsertTitle(Title title) throws IOException;
 }

@@ -59,14 +59,6 @@ public class TitleMongoAccessor implements TitleAccessor {
   }
 
   @Override
-  public void insertTitle(Title title) throws IOException {
-    title.setId(generateId(title));
-
-    DBObject object = _morphia.toDBObject(title);
-    _coll.insert(object);
-  }
-
-  @Override
   public void upsertTitle(Title title) throws IOException {
     title.setId(generateId(title));
 
@@ -76,6 +68,6 @@ public class TitleMongoAccessor implements TitleAccessor {
   }
 
   private static String generateId(Title title) {
-    return HashUtil.sha256(title.getUrl()).substring(0, 10);
+    return HashUtil.sha256(title.getProviderId() + "|" + title.getTitle()).substring(0, 10);
   }
 }

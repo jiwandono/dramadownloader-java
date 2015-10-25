@@ -12,7 +12,7 @@ public class Title {
   private Type type;
   private String title;
   private String url;
-  private Long year;
+  private Integer year;
   private Origin origin;
   private Set<String> genres = new HashSet<>();
   private CompletionStatus completionStatus;
@@ -57,11 +57,11 @@ public class Title {
     this.url = url;
   }
 
-  public Long getYear() {
+  public Integer getYear() {
     return year;
   }
 
-  public void setYear(Long year) {
+  public void setYear(Integer year) {
     this.year = year;
   }
 

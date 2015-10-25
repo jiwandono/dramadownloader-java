@@ -25,12 +25,31 @@ public class DramacoolcomTitleScraper extends TitleScraper {
     TitleScrapeResult result = new TitleScrapeResult(TitleScrapeResult.Status.FAILED);
 
     Document doc = getDocument(url);
-    Elements anchors = doc.select(".listdramacool a[href]");
+    Elements entires = doc.select(".listdramacool");
 
-    for(Element a : anchors) {
+    for(Element entry : entires) {
+      Element a = entry.select("a[href]").first();
+
       Title title = new Title();
       title.setTitle(a.text().trim());
       title.setUrl(a.attr("abs:href"));
+      title.setType(Title.Type.DRAMA);
+      title.setProviderId("dramacool");
+
+      int classSeq = 1;
+      for(String className : entry.classNames()) {
+        if(classSeq == 6) {
+          int year = Integer.parseInt(className, 10);
+          if(year > 1900)
+            title.setYear(year);
+        } else if(classSeq >= 8 && classSeq < entry.classNames().size()) {
+          String genre = className.trim().toLowerCase();
+          title.getGenres().add(genre);
+        }
+
+        classSeq++;
+      }
+
       result.getTitles().add(title);
     }
 

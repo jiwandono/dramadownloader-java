@@ -34,7 +34,7 @@ public abstract class TitleScraperTestBase {
     TitleScrapeResult result = scraper.scrape(new TitleScrapeRequest(url));
     for(Title title : result.getTitles()) {
       try {
-        _titleAccessor.insertTitle(title);
+        _titleAccessor.upsertTitle(title);
         System.out.println("Inserting entry: " + title.getId() + " - " + title.getUrl() + " - " + title.getId() + "/" + StringUtil.toPrettyUrl(title.getTitle()));
       } catch (DuplicateKeyException e) {
         System.out.println("Duplicate entry: " + title.getId() + " - " + title.getUrl() + " - " + title.getId() + "/" + StringUtil.toPrettyUrl(title.getTitle()));
