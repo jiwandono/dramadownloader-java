@@ -18,6 +18,8 @@ import com.dramadownloader.scraper.stream.DramaniceStreamScraper;
 import com.dramadownloader.scraper.stream.DramatvStreamScraper;
 import com.dramadownloader.scraper.stream.GooddramaStreamScraper;
 import com.dramadownloader.scraper.stream.StreamScraperFactory;
+import com.dramadownloader.scraper.title.DramacoolcomTitleScraper;
+import com.dramadownloader.scraper.title.GooddramaTitleScraper;
 import com.dramadownloader.scraper.title.TitleScraperFactory;
 
 import java.util.concurrent.Executors;
@@ -56,6 +58,8 @@ public class ScraperComponent {
     _episodeScraperFactory.register(new DramacoolcomEpisodeScraper());
 
     _titleScraperFactory = new TitleScraperFactory();
+    _titleScraperFactory.register(new DramacoolcomTitleScraper());
+    _titleScraperFactory.register(new GooddramaTitleScraper());
   }
 
   public FileScraperFactory getFileScraperFactory() {
