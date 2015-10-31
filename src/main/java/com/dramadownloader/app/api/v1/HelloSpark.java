@@ -68,7 +68,6 @@ public class HelloSpark {
     index();
     list();
     detail();
-    helloWorld();
     fetchStreams();
     fetchEpisodes();
     stats();
@@ -135,10 +134,6 @@ public class HelloSpark {
         return "404 Not found";
       }
     });
-  }
-
-  public static void helloWorld() {
-    get("/", (request, response) -> "Hello World!");
   }
 
   public static void fetchStreams() {
