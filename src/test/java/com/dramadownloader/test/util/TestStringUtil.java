@@ -10,13 +10,15 @@ public class TestStringUtil {
     String[] inputs = {
         "Hello World",
         "Hello World (Movie)",
-        "Hello World! with Symbols?"
+        "Hello World! with Symbols?",
+        "This, That & the Other! Various Outré Considerations"
     };
 
     String[] expecteds = {
         "hello-world",
         "hello-world-movie",
-        "hello-world-with-symbols"
+        "hello-world-with-symbols",
+        "this-that-the-other-various-outre-considerations"
     };
 
     for(int i = 0; i < inputs.length; i++) {
