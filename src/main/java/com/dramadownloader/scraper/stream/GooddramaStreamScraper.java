@@ -74,34 +74,40 @@ public class GooddramaStreamScraper extends StreamScraper {
 
     if(chosenPlaylist != null) {
       Elements parts = doc.select("#streams .vmargin").eq(chosenPlaylist).select(".part_list a[href]");
-      CountDownLatch latch = new CountDownLatch(parts.size());
-      Map<Integer, StreamScrapeResult.Stream> streams = new TreeMap<>();
-      int seqNo = 1;
-      for(Element part : parts) {
-        Integer localSeqNo = seqNo;
-        String pageUrl = part.attr("href");
-        _scheduledExecutorService.submit(() -> {
-          try {
-            Document partDoc = getDocument(pageUrl);
-            Element iframe = partDoc.select("#streams iframe[src]").get(chosenPlaylist);
-            String streamUrl = iframe.attr("src");
-            streams.put(localSeqNo, new StreamScrapeResult.Stream("Part " + localSeqNo, streamUrl));
-          } catch (IOException e) {
-            log.error(e.getMessage(), e);
-          } finally {
-            latch.countDown();
-          }
-        });
-        seqNo++;
-      }
+      if(parts.size() == 0) {
+        Element iframe = iframes.get(chosenPlaylist);
+        String streamUrl = iframe.attr("src");
+        result.getStreams().add(new StreamScrapeResult.Stream("Server Standard", streamUrl));
+      } else {
+        CountDownLatch latch = new CountDownLatch(parts.size());
+        Map<Integer, StreamScrapeResult.Stream> streams = new TreeMap<>();
+        int seqNo = 1;
+        for(Element part : parts) {
+          Integer localSeqNo = seqNo;
+          String pageUrl = part.attr("href");
+          _scheduledExecutorService.submit(() -> {
+            try {
+              Document partDoc = getDocument(pageUrl);
+              Element iframe = partDoc.select("#streams iframe[src]").get(chosenPlaylist);
+              String streamUrl = iframe.attr("src");
+              streams.put(localSeqNo, new StreamScrapeResult.Stream("Part " + localSeqNo, streamUrl));
+            } catch (IOException e) {
+              log.error(e.getMessage(), e);
+            } finally {
+              latch.countDown();
+            }
+          });
+          seqNo++;
+        }
 
-      try {
-        latch.await(15, TimeUnit.SECONDS);
-      } catch (InterruptedException e) {
-        log.error(e.getMessage(), e);
-      }
+        try {
+          latch.await(15, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+          log.error(e.getMessage(), e);
+        }
 
-      result.getStreams().addAll(streams.values());
+        result.getStreams().addAll(streams.values());
+      }
     }
 
     String title = doc.select("#top_block h1").first().text().trim();
