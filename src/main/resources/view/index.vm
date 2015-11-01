@@ -1,6 +1,6 @@
 #parse("view/common/layout.vm")
 
-#macro(content)
+#macro(index_content)
 			<div id="content">
 				<p>Simply copy and paste the <b>link</b> of the drama stream page you want to download, click <b>continue</b> button, and download link will be ready.</p>
 				<form method="get" id="form-main">
@@ -110,4 +110,4 @@
 			</div>
 #end
 
-#generalLayout("", "#content()")
+#generalLayout("", "#index_content()")
