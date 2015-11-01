@@ -102,15 +102,28 @@ public class HelloSpark {
       }
 
       char first = prefix.charAt(0);
-
-      if((first >= 'a' && first <= 'z') || first == '0') {
-        response.type("application/json");
-        List<Title> titles = titleAccessor.getTitlesByPrefix(prefix);
-        return objectMapper.writeValueAsString(titles);
+      boolean queryOk = (first >= 'a' && first <= 'z') || first == '0';
+      if(!queryOk) {
+        response.status(404);
+        return "404 Not found";
       }
 
-      response.status(404);
-      return "404 Not found";
+      String renderResult;
+      Object cachedResponse = memcachedClient.get("page_list_" + first);
+      if(cachedResponse == null) {
+        Map<String, Object> context = new HashMap<>();
+        context.put("requestUrl", request.url());
+        context.put("esc", new EscapeTool());
+        context.put("stringUtil", StringUtil.class);
+        context.put("title", "List of Titles - " + String.valueOf(first).toUpperCase() + " - DramaDownloader.com");
+        context.put("dramaTitles", titleAccessor.getTitlesByPrefix(prefix));
+        renderResult = templateEngine.render(new ModelAndView(context, "view/list.vm"));
+        memcachedClient.set("page_list_" + first, 7 * 86400, renderResult);
+      } else {
+        renderResult = (String) cachedResponse;
+      }
+
+      return renderResult;
     });
   }
 

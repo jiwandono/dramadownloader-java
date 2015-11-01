@@ -24,6 +24,24 @@
 	margin: 0 auto;
 }
 
+#index-list {
+}
+
+#index-list li {
+  display: inline-block;
+  list-style: none;
+  padding: 0px 4px 0px 4px;
+}
+
+#index-list li a {
+  font-weight: bold;
+  text-decoration: none;
+}
+
+#index-list li a:hover {
+  text-decoration: underline;
+}
+
 #form-text, #form-submit {
 	height: 20px;
 	padding: 3px 6px;

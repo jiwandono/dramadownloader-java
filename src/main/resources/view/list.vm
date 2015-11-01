@@ -1,0 +1,50 @@
+#parse("view/common/layout.vm")
+
+#macro(list_content)
+<div class="info like-share">
+  <div class="fb-like" data-href="http://dramadownloader.com" data-layout="standard" data-action="like" data-show-faces="false" data-share="true"></div>
+</div>
+
+<div id="index-list">
+  <ul>
+    <li><a href="/list/0">#</a></li>
+    <li><a href="/list/a">A</a></li>
+    <li><a href="/list/b">B</a></li>
+    <li><a href="/list/c">C</a></li>
+    <li><a href="/list/d">D</a></li>
+    <li><a href="/list/e">E</a></li>
+    <li><a href="/list/f">F</a></li>
+    <li><a href="/list/g">G</a></li>
+    <li><a href="/list/h">H</a></li>
+    <li><a href="/list/i">I</a></li>
+    <li><a href="/list/j">J</a></li>
+    <li><a href="/list/k">K</a></li>
+    <li><a href="/list/l">L</a></li>
+    <li><a href="/list/m">M</a></li>
+    <li><a href="/list/n">N</a></li>
+    <li><a href="/list/o">O</a></li>
+    <li><a href="/list/p">P</a></li>
+    <li><a href="/list/q">Q</a></li>
+    <li><a href="/list/r">R</a></li>
+    <li><a href="/list/s">S</a></li>
+    <li><a href="/list/t">T</a></li>
+    <li><a href="/list/u">U</a></li>
+    <li><a href="/list/v">V</a></li>
+    <li><a href="/list/w">W</a></li>
+    <li><a href="/list/x">X</a></li>
+    <li><a href="/list/y">Y</a></li>
+    <li><a href="/list/z">Z</a></li>
+  </ul>
+</div>
+
+<div id="index-list-content">
+  <ul>
+  #foreach($dramaTitle in $dramaTitles)
+    #set($dramaUrl = "/detail/" + $dramaTitle.getId() + "/" + $stringUtil.urlize($dramaTitle.getTitle()))
+    <li><a href="$dramaUrl"><b>$esc.html($dramaTitle.getTitle())</b></a> <i>Source: $dramaTitle.getProviderId()</i></li>
+  #end
+  </ul>
+</div>
+#end
+
+#generalLayout($title, "#list_content()")
