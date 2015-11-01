@@ -2,6 +2,7 @@ package com.dramadownloader.scraper.component;
 
 import com.dramadownloader.scraper.episode.DramacoolcomEpisodeScraper;
 import com.dramadownloader.scraper.episode.EpisodeScraperFactory;
+import com.dramadownloader.scraper.episode.GooddramaEpisodeScraper;
 import com.dramadownloader.scraper.file.DramauploadFileScraper;
 import com.dramadownloader.scraper.file.EasyvideoFileScraper;
 import com.dramadownloader.scraper.file.EmbeddramaFileScraper;
@@ -56,6 +57,7 @@ public class ScraperComponent {
 
     _episodeScraperFactory = new EpisodeScraperFactory();
     _episodeScraperFactory.register(new DramacoolcomEpisodeScraper());
+    _episodeScraperFactory.register(new GooddramaEpisodeScraper(_scheduledExecutorService));
 
     _titleScraperFactory = new TitleScraperFactory();
     _titleScraperFactory.register(new DramacoolcomTitleScraper());
