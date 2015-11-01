@@ -36,6 +36,7 @@ public class TitleMongoAccessor implements TitleAccessor {
   @Override
   public List<Title> getTitlesByPrefix(String prefix) throws IOException {
     char letter = prefix.charAt(0);
+    DBObject sort = new BasicDBObject().append("title", 1);
     DBObject condition = new BasicDBObject();
 
     if(letter >= 'a' && letter <= 'z') {
@@ -47,7 +48,7 @@ public class TitleMongoAccessor implements TitleAccessor {
     }
 
     List<Title> titles = new ArrayList<>();
-    try (DBCursor cursor = _coll.find(condition)) {
+    try (DBCursor cursor = _coll.find(condition).sort(sort)) {
       while (cursor.hasNext()) {
         DBObject object = cursor.next();
         Title title = _morphia.fromDBObject(Title.class, object);
