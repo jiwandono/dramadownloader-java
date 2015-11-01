@@ -1,0 +1,115 @@
+#parse("view/common/layout.vm")
+
+#macro(detail_content)
+<div class="info like-share">
+  <div class="fb-like" data-href="http://dramadownloader.com" data-layout="standard" data-action="like" data-show-faces="false" data-share="true"></div>
+</div>
+
+<hr />
+
+<div id="title-detail" style="float: left">
+  <table>
+    <tr>
+      <td class="table-field">Title</td>
+      <td>$esc.html($dramaTitle.getTitle())</td>
+    </tr>
+    #if("$!dramaTitle.getYear()" != "")
+    <tr>
+      <td class="table-field">Year</td>
+      <td>$!dramaTitle.getYear()</td>
+    </tr>
+    #end
+    #if($dramaTitle.getGenres().size() > 0)
+    <tr>
+      <td class="table-field">Genre</td>
+      <td>
+        <ul>
+        #foreach($genre in $dramaTitle.getGenres())
+          <li>$stringUtil.capitalize($genre.replace("_", " "))</li>
+        #end
+        </ul>
+      </td>
+    </tr>
+    #end
+    <tr>
+      <td class="table-field">Source</td>
+      <td><a href="$esc.html($dramaTitle.getUrl())" target="_blank" rel="noreferrer">$esc.html($dramaTitle.getUrl())</a></td>
+    </tr>
+    <tr>
+      <td class="table-field">Episodes</td>
+      <td id="title-episodes"><a href="javascript:void(0)" id="button-show-episodes">Show Episodes</a></td>
+    </tr>
+  </table>
+</div>
+
+<div class="info advertisement">
+  <!-- DD Rect 1 -->
+  <ins class="adsbygoogle"
+       style="display:inline-block;width:300px;height:250px"
+       data-ad-client="ca-pub-6831380608854697"
+       data-ad-slot="9954228416"></ins>
+  <script>
+  (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <!-- DD Rect 2 -->
+  <ins class="adsbygoogle"
+       style="display:inline-block;width:300px;height:250px"
+       data-ad-client="ca-pub-6831380608854697"
+       data-ad-slot="2430961618"></ins>
+  <script>
+  (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
+
+<div class="clear"></div>
+
+<script type="text/javascript">
+  $('#button-show-episodes').click(function(e) {
+    e.preventDefault();
+
+    $('#title-episodes').html('<img src="/static/img/loader.gif" />');
+
+    var postData = {
+      url: '$dramaTitle.getUrl()'
+    };
+
+    $.ajax({
+      type: "POST",
+      url: "/v1/drama/fetchepisodes",
+      data: JSON.stringify(postData),
+      success: function(response) {
+        setTimeout(function() {
+          if(response.status == "OK") {
+            var episodes = response.episodes;
+            var ul = $("<ul>");
+            for(var i = 0; i < episodes.length; i++) {
+              var li = $('<li>');
+
+              var buttonDownload = $('<a>', {
+                href   : '/?url=' + encodeURIComponent(episodes[i].url) + '&ref=detail',
+                target: '_blank'
+              }).text("Download");
+
+              li.append(episodes[i].displayTitle + " >> ");
+              li.append(buttonDownload);
+
+              ul.append(li);
+            }
+
+            $('#title-episodes').empty();
+            $('#title-episodes').append(ul);
+          } else {
+            $('#title-episodes').text('Failed to get episodes. Please refresh the page and try again.');
+          }
+        }, 2000);
+      },
+      error: function() {
+
+      }
+    })
+  });
+</script>
+#end
+
+#generalLayout($title, "#detail_content()")

@@ -140,13 +140,27 @@ public class HelloSpark {
         found = false;
       }
 
-      if(found) {
-        response.type("application/json");
-        return objectMapper.writeValueAsString(title);
-      } else {
+      if(!found) {
         response.status(404);
         return "404 Not found";
       }
+
+      String renderResult;
+      Object cachedResponse = memcachedClient.get("page_detail_" + id);
+      if(cachedResponse == null) {
+        Map<String, Object> context = new HashMap<>();
+        context.put("requestUrl", request.url());
+        context.put("esc", new EscapeTool());
+        context.put("stringUtil", StringUtil.class);
+        context.put("title", title.getTitle() + " - Source: " + title.getProviderId() + " - DramaDownloader.com");
+        context.put("dramaTitle", title);
+        renderResult = templateEngine.render(new ModelAndView(context, "view/detail.vm"));
+        memcachedClient.set("page_detail_" + id, 7 * 86400, renderResult);
+      } else {
+        renderResult = (String) cachedResponse;
+      }
+
+      return renderResult;
     });
   }
 
