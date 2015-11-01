@@ -70,6 +70,8 @@
 
     $('#title-episodes').html('<img src="/static/img/loader.gif" />');
 
+    ga('send', 'event', 'detail', 'show-episodes');
+
     var postData = {
       url: '$dramaTitle.getUrl()'
     };
