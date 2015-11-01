@@ -1,8 +1,4 @@
 $(function() {
-	var endpoints = [
-		'http://api.dramadownloader.com',
-	];
-
 	handleInputBoxChange();
 	detectRequestParameter();
 	initSubmitListener();
@@ -34,8 +30,6 @@ $(function() {
 			url: url
 		};
 
-		var endpoint = endpoints[Math.floor(Math.random() * endpoints.length)];
-
 		var t0 = 0;
 		try {
 			t0 = performance.now();
@@ -45,7 +39,7 @@ $(function() {
 
 		$.ajax({
 			type: "POST",
-			url: endpoint + "/v1/drama/fetchstreams",
+			url: "/v1/drama/fetchstreams",
 			data: JSON.stringify(postData),
 			success: function(response) {
 				var elapsedMsec = 0;
