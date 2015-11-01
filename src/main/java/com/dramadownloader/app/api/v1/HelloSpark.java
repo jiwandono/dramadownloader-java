@@ -80,9 +80,10 @@ public class HelloSpark {
       Object cachedResponse = memcachedClient.get("page_index");
       if(cachedResponse == null) {
         Map<String, Object> contexts = new HashMap<>();
+        contexts.put("requestUrl", request.url());
         contexts.put("esc", new EscapeTool());
         contexts.put("topUrls", getTopN(5));
-        renderResult = templateEngine.render(new ModelAndView(contexts, "views/index.vm"));
+        renderResult = templateEngine.render(new ModelAndView(contexts, "view/index.vm"));
         memcachedClient.set("page_index", 60, renderResult);
       } else {
         renderResult = (String) cachedResponse;

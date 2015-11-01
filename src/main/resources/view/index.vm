@@ -1,43 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="description" content="Download Japanese dramas, Korean dramas, Asian dramas, and Animes from Dramacool, Dramatv, Dramafire, Dramanice, Gooddrama, DramaGalaxy, DramaGo, Animestv easily." />
-		<meta property="og:title" content="DramaDownloader.com: Download Japanese dramas, Korean dramas, Asian dramas, and Animes from Dramacool, Dramatv, Dramafire, Dramanice, Gooddrama, DramaGalaxy, DramaGo, Animestv easily." />
-		<meta property="og:description" content="Download Japanese dramas, Korean dramas, Asian dramas, and Animes from Dramacool, Dramatv, Dramafire, Dramanice, Gooddrama, DramaGalaxy, DramaGo, Animestv easily." />
-		<meta property="og:url" content="http://dramadownloader.com" />
+#parse("view/common/layout.vm")
 
-		<title>DramaDownloader.com: Download Japanese dramas, Korean dramas, Asian dramas, and Animes from Dramacool, Dramatv, Dramafire, Dramanice, Gooddrama, DramaGalaxy, DramaGo, Animestv easily.</title>
-
-		<link rel="stylesheet" href="static/css/page.css" />
-		<link rel="image_src" href="static/img/logo.png" />
-
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-		<script src="static/js/purl.js"></script>
-		<script src="static/js/page.js"></script>
-
-		<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-	</head>
-	<body>
-		<div id="fb-root"></div>
-		<script>(function(d, s, id) {
-		  var js, fjs = d.getElementsByTagName(s)[0];
-		  if (d.getElementById(id)) return;
-		  js = d.createElement(s); js.id = id;
-		  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&appId=538883039567775&version=v2.0";
-		  fjs.parentNode.insertBefore(js, fjs);
-		}(document, 'script', 'facebook-jssdk'));</script>
-		<div class="container">
-			<div id="header">
-				<h1><a href="." class="logo" title="Download Japanese dramas, Korean dramas, Asian dramas, and Animes from Dramacool, Dramatv, Dramafire, Dramanice, Gooddrama, DramaGalaxy, DramaGo, Animestv easily."></a></h1>
-			</div>
-
-			<div class="clear"></div>
-
-			<div id="site-description">
-				<h2>Download Japanese dramas, Korean dramas, Asian dramas, and Animes from Dramacool, Dramatv, Dramafire, Dramanice, Gooddrama, DramaGalaxy, DramaGo, Animestv easily.</h2>
-			</div>
-
+#macro(indexContent)
 			<div id="content">
 				<p>Simply copy and paste the <b>link</b> of the drama stream page you want to download, click <b>continue</b> button, and download link will be ready.</p>
 				<form method="get" id="form-main">
@@ -145,47 +108,6 @@
 					})();
 				</script>
 			</div>
+#end
 
-			<hr />
-
-			<div class="info" id="footer">
-				<ul class="footer-links">
-					<li class="head">JDrama, KDrama, various Asian Drama Videos</li>
-					<li><a href="http://blog.dramadownloader.com/how-to-download-from-dramacool-tv/">Download from Dramatv.co</a></li>
-					<li><a href="http://blog.dramadownloader.com/how-to-download-www-dramacool-com-videos/">Download from Dramacool.com</a></li>
-					<li><a href="http://blog.dramadownloader.com/how-to-download-from-dramafire-com/">Download from DramaFire.com</a></li>
-					<li><a href="http://blog.dramadownloader.com/how-to-download-from-dramacool-tv/">Download from Dramacool.tv</a></li>
-					<li><a href="http://blog.dramadownloader.com/how-to-download-videos-from-gooddrama/">Download from Gooddrama.net</a></li>
-					<li><a href="http://blog.dramadownloader.com/how-to-download-videos-from-dramago-com/">Download from DramaGo.com</a></li>
-				</ul>
-				<ul class="footer-links">
-					<li class="head">Anime Videos</li>
-					<li><a href="http://blog.dramadownloader.com/download-anime4you-net-videos/">Download from Animestv.eu</a></li>
-				</ul>
-				<ul class="footer-links">
-
-				</ul>
-			</div>
-
-			<div class="clear"></div>
-
-			<hr />
-
-			<div class="info" id="disclaimer">
-				<p>DramaDownloader.com does not host any video files and is not affiliated with any video sharing sites mentioned on this website, and we don't allow you to make any illegal copies of copyrighted content. Please respect content owner's rights while grabbing online videos. If your copyright has been violated please contact the administrator of offending websites where your files are stored.</p>
-				<p>We are using cookies to give you the best experience on our site and for analytical purposes. Cookies are files stored in your browser and are used by most websites to help personalise your web experience. By continuing to use our website, you are agreeing to our use of cookies.</p>
-			</div>
-		</div>
-
-		<script>
-			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-			})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-			ga('create', 'UA-11057046-5', 'dramadownloader.com');
-			ga('require', 'displayfeatures');
-			ga('send', 'pageview');
-		</script>
-	</body>
-</html>
+#generalLayout("", "#indexContent()")
