@@ -9,11 +9,11 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="description" content="Download Japanese dramas, Korean dramas, Asian dramas, and Animes from Dramacool, Dramatv, Dramafire, Dramanice, Gooddrama, DramaGalaxy, DramaGo, Animestv easily." />
-		<meta property="og:title" content="$title" />
+		<meta property="og:title" content="$esc.html($title)" />
 		<meta property="og:description" content="Download Japanese dramas, Korean dramas, Asian dramas, and Animes from Dramacool, Dramatv, Dramafire, Dramanice, Gooddrama, DramaGalaxy, DramaGo, Animestv easily." />
-		<meta property="og:url" content="$requestUrl" />
+		<meta property="og:url" content="$esc.html($requestUrl)" />
 
-		<title>$title</title>
+		<title>$esc.html($title)</title>
 
 		<link rel="stylesheet" href="/static/css/page.css" />
 		<link rel="image_src" href="/static/img/logo.png" />
