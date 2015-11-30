@@ -24,6 +24,8 @@ public class AnimestvStreamScraper extends StreamScraper {
     DOMAINS.add("www.animestv.eu");
     DOMAINS.add("anime4you.net");
     DOMAINS.add("www.anime4you.net");
+    DOMAINS.add("animetv.online");
+    DOMAINS.add("www.animetv.online");
   }
 
   @Override
