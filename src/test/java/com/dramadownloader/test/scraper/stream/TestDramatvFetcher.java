@@ -12,6 +12,7 @@ public class TestDramatvFetcher extends StreamScraperTestBase {
 
   private static final List<String> urls = new ArrayList<>();
   static {
+    urls.add("http://dramatv.tv/watch-drama/the-return-of-superman-ep-106-english-sub.html");
     urls.add("http://dramatv.tv/watch-drama/the-heirs-ep-17-english-sub.html");
     urls.add("http://www.dramatv.tv/watch-drama/king-geunchogo-ep-43-english-sub.html");
     urls.add("http://dramatv.co/watch-drama/kinkyori-renai-season-zero-ep-1-english-sub.html");

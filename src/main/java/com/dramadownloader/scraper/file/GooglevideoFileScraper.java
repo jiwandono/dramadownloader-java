@@ -12,6 +12,7 @@ public class GooglevideoFileScraper extends FileScraper {
     SEQUENCES = new HashSet<>();
     SEQUENCES.add("googlevideo.com/");
     SEQUENCES.add("googleusercontent.com/");
+    SEQUENCES.add("blogspot.com/");
   }
 
   @Override
