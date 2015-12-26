@@ -20,6 +20,8 @@ public class DramacoolcomStreamScraper extends StreamScraper {
     DOMAINS = new HashSet<>();
     DOMAINS.add("dramacool.com");
     DOMAINS.add("www.dramacool.com");
+    DOMAINS.add("dramacool.one");
+    DOMAINS.add("www.dramacool.one");
   }
 
   @Override
