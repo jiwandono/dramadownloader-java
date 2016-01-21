@@ -17,6 +17,8 @@ public class DramacoolcomEpisodeScraper extends EpisodeScraper {
     DOMAINS.add("www.dramacool.com");
     DOMAINS.add("dramacool.one");
     DOMAINS.add("www.dramacool.one");
+    DOMAINS.add("dramacool.cc");
+    DOMAINS.add("www.dramacool.cc");
   }
 
   @Override

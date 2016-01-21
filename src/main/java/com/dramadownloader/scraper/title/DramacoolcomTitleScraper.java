@@ -18,6 +18,8 @@ public class DramacoolcomTitleScraper extends TitleScraper {
     DOMAINS.add("www.dramacool.com");
     DOMAINS.add("dramacool.one");
     DOMAINS.add("www.dramacool.one");
+    DOMAINS.add("dramacool.cc");
+    DOMAINS.add("www.dramacool.cc");
   }
 
   @Override
