@@ -25,6 +25,8 @@ public class DramatvStreamScraper extends StreamScraper {
     DOMAINS.add("www.dramacool.tv");
     DOMAINS.add("dramatv.eu");
     DOMAINS.add("www.dramatv.eu");
+    DOMAINS.add("drama.to");
+    DOMAINS.add("www.drama.to");
   }
 
   @Override
