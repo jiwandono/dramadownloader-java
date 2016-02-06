@@ -15,6 +15,8 @@ public class VideouploadusFileScraper extends FileScraper {
     DOMAINS = new HashSet<>();
     DOMAINS.add("videoupload.us");
     DOMAINS.add("www.videoupload.us");
+    DOMAINS.add("videoupload.biz");
+    DOMAINS.add("www.videoupload.biz");
   }
 
   @Override
@@ -26,13 +28,13 @@ public class VideouploadusFileScraper extends FileScraper {
 
     FileScrapeResult result = new FileScrapeResult(FileScrapeResult.Status.FAILED);
 
-    if(url.contains("videoupload.us/drama/video")) {
+    if(url.contains("/drama/video")) {
       // Leave as is.
       result.getFiles().add(new FileScrapeResult.File(url, false));
-    } else if(url.contains("videoupload.us/drama/embed-")) {
+    } else if(url.contains("/drama/embed-")) {
       String downloadUrl = url.replace("/embed-", "/video-");
       result.getFiles().add(new FileScrapeResult.File(downloadUrl, false));
-    } else if(url.contains("videoupload.us/embed/drama-")) {
+    } else if(url.contains("/embed/drama-")) {
       String downloadUrl = url.replace("/embed/drama-", "/drama/video-");
       result.getFiles().add(new FileScrapeResult.File(downloadUrl, false));
     } else {
