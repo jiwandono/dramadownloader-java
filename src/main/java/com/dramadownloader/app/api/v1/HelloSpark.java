@@ -82,7 +82,6 @@ public class HelloSpark {
         Map<String, Object> context = new HashMap<>();
         context.put("requestUrl", request.url());
         context.put("esc", new EscapeTool());
-        context.put("topUrls", getTopN(5));
         renderResult = templateEngine.render(new ModelAndView(context, "view/index.vm"));
         memcachedClient.set("page_index", 60, renderResult);
       } else {
