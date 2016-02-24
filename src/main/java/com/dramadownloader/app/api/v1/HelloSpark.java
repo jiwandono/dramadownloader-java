@@ -66,10 +66,10 @@ public class HelloSpark {
     staticFileLocation("/public");
 
     index();
-    list();
-    detail();
+    // list();
+    // detail();
     fetchStreams();
-    fetchEpisodes();
+    // fetchEpisodes();
     stats();
     passthru();
   }
