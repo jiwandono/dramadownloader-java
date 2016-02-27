@@ -35,20 +35,11 @@
 			</div>
 
 			<div class="info advertisement">
-				<!-- DD Rect 1 -->
+				<!-- DramaDownloader.com - 728x90 -->
 				<ins class="adsbygoogle"
-					style="display:inline-block;width:300px;height:250px"
+					style="display:inline-block;width:728px;height:90px"
 					data-ad-client="ca-pub-6831380608854697"
-					data-ad-slot="9954228416"></ins>
-				<script>
-				(adsbygoogle = window.adsbygoogle || []).push({});
-				</script>
-				&nbsp;&nbsp;&nbsp;&nbsp;
-				<!-- DD Rect 2 -->
-				<ins class="adsbygoogle"
-					style="display:inline-block;width:300px;height:250px"
-					data-ad-client="ca-pub-6831380608854697"
-					data-ad-slot="2430961618"></ins>
+					data-ad-slot="4298052416"></ins>
 				<script>
 				(adsbygoogle = window.adsbygoogle || []).push({});
 				</script>
@@ -75,11 +66,11 @@
 			<hr />
 
 			<div class="info advertisement">
-				<!-- DD Rect 3 -->
+				<!-- DramaDownloader.com - 728x90 Footer -->
 				<ins class="adsbygoogle"
-					style="display:inline-block;width:300px;height:250px"
+					style="display:inline-block;width:728px;height:90px"
 					data-ad-client="ca-pub-6831380608854697"
-					data-ad-slot="3907694818"></ins>
+					data-ad-slot="9207413215"></ins>
 				<script>
 				(adsbygoogle = window.adsbygoogle || []).push({});
 				</script>
@@ -97,6 +88,17 @@
 						dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
 						(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
 					})();
+				</script>
+			</div>
+
+			<div id="sidebar-right">
+				<!-- DramaDownloader.com - 160x600 -->
+				<ins class="adsbygoogle"
+					style="display:inline-block;width:160px;height:600px"
+					data-ad-client="ca-pub-6831380608854697"
+					data-ad-slot="9222936412"></ins>
+				<script>
+				(adsbygoogle = window.adsbygoogle || []).push({});
 				</script>
 			</div>
 #end
