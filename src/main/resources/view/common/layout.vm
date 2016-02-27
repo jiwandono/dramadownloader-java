@@ -19,7 +19,6 @@
 		<link rel="image_src" href="/static/img/logo.png" />
 
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-		<script src="/static/js/purl.js"></script>
 		<script src="/static/js/page.js"></script>
 
 		<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>

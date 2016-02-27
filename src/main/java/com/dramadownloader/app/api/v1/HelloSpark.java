@@ -76,6 +76,11 @@ public class HelloSpark {
 
   public static void index() {
     get("/", (request, response) -> {
+      if(request.queryString() != null) {
+        response.status(404);
+        return "404 Not found";
+      }
+
       String renderResult;
       Object cachedResponse = memcachedClient.get("page_index");
       if(cachedResponse == null) {

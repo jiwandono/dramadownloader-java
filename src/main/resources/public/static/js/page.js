@@ -1,6 +1,5 @@
 $(function() {
 	handleInputBoxChange();
-	detectRequestParameter();
 	initSubmitListener();
 	initRetryButton();
 	initDownloadButtonListener();
@@ -11,14 +10,6 @@ $(function() {
 		$('#form-text').on('input', function() {
 			$('.result').hide();
 		});
-	}
-
-	function detectRequestParameter() {
-		var url = $.url().param('url');
-		if(url) {
-			$('#form-text').val(url);
-			getDownloadUrl(url);
-		}
 	}
 
 	function getDownloadUrl(url) {
@@ -77,16 +68,23 @@ $(function() {
 
 	function initSubmitListener() {
 		$('#form-main').submit(function(e) {
+		  e.preventDefault();
+
+		  $(".result").hide();
+		  clearDownloadButtons();
+
 			var origUrl = $('#form-text').val();
 			var trimUrl = origUrl.trim();
 			$('#form-text').val(trimUrl);
 			ga('send', 'event', 'downloads', 'submit', trimUrl);
+			getDownloadUrl(trimUrl);
 		});
 	}
 
 	function initRetryButton() {
 		$('a.button-retry').click(function() {
-			detectRequestParameter();
+			var url = $('#form-text').val();
+			getDownloadUrl(url);
 		});
 	}
 
@@ -116,6 +114,10 @@ $(function() {
 
 			$('#download-links').append($button);
 		}
+	}
+
+	function clearDownloadButtons() {
+	  $('#download-links').empty();
 	}
 
 	function handleSuccess(response) {
