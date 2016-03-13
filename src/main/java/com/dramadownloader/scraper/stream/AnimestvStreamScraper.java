@@ -30,6 +30,8 @@ public class AnimestvStreamScraper extends StreamScraper {
     DOMAINS.add("www.animetv.in");
     DOMAINS.add("animetv.one");
     DOMAINS.add("www.animetv.one");
+    DOMAINS.add("animetv.top");
+    DOMAINS.add("www.animetv.top");
   }
 
   @Override
