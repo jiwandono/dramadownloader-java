@@ -3,15 +3,7 @@ package com.dramadownloader.scraper.component;
 import com.dramadownloader.scraper.episode.DramacoolcomEpisodeScraper;
 import com.dramadownloader.scraper.episode.EpisodeScraperFactory;
 import com.dramadownloader.scraper.episode.GooddramaEpisodeScraper;
-import com.dramadownloader.scraper.file.DramauploadFileScraper;
-import com.dramadownloader.scraper.file.EasyvideoFileScraper;
-import com.dramadownloader.scraper.file.EmbeddramaFileScraper;
-import com.dramadownloader.scraper.file.FileScraperFactory;
-import com.dramadownloader.scraper.file.GooglevideoFileScraper;
-import com.dramadownloader.scraper.file.Mp4UploadFileScraper;
-import com.dramadownloader.scraper.file.StoragestreamingFileScraper;
-import com.dramadownloader.scraper.file.VideouploadusFileScraper;
-import com.dramadownloader.scraper.file.ZippyshareFileScraper;
+import com.dramadownloader.scraper.file.*;
 import com.dramadownloader.scraper.stream.AnimestvStreamScraper;
 import com.dramadownloader.scraper.stream.DramacoolcomStreamScraper;
 import com.dramadownloader.scraper.stream.DramafirecomStreamScraper;
@@ -38,6 +30,7 @@ public class ScraperComponent {
     _scheduledExecutorService = Executors.newScheduledThreadPool(16);
 
     _fileScraperFactory = new FileScraperFactory();
+    _fileScraperFactory.register(new EmbeddriveFileScraper());
     _fileScraperFactory.register(new DramauploadFileScraper());
     _fileScraperFactory.register(new EasyvideoFileScraper());
     _fileScraperFactory.register(new EmbeddramaFileScraper());

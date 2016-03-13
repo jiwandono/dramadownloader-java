@@ -24,6 +24,7 @@ import com.dramadownloader.scraper.file.FileScrapeResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.spy.memcached.MemcachedClient;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.log4j.Logger;
 import org.apache.velocity.tools.generic.EscapeTool;
 import spark.ModelAndView;
@@ -199,7 +200,7 @@ public class HelloSpark {
       LOGGER.info("URL " + episodeUrl + " processed with status " + streamScrapeResult.getStatus());
 
       CountDownLatch countDownLatch = new CountDownLatch(streamScrapeResult.getStreams().size());
-      int seqNo = 1;
+      MutableInt seqNo = new MutableInt(1);
       Map<Integer, FetchStreamsResponse.Link> links = new TreeMap<>();
       for (StreamScrapeResult.Stream stream : streamScrapeResult.getStreams()) {
         final String streamName = stream.getStreamName();
@@ -213,15 +214,19 @@ public class HelloSpark {
           continue;
         }
 
-        Integer localSeqNo = seqNo;
         commonComponent.getScheduledExecutorService().submit(() -> {
           try {
             FileScrapeResult fileScrapeResult = fileScraper.scrape(new FileScrapeRequest(streamUrl, streamTitle));
-            if (fileScrapeResult.getFiles().size() > 0) {
-              FileScrapeResult.File file = fileScrapeResult.getFiles().get(0);
+            for(FileScrapeResult.File file : fileScrapeResult.getFiles()) {
+              String linkName = streamName;
+              if(!StringUtil.isNullOrEmpty(file.getLabel())) {
+                linkName = streamName + " (" + file.getLabel() + ")";
+              }
+
+              FetchStreamsResponse.Link link = new FetchStreamsResponse.Link(linkName, file.getDownloadUrl(), file.isDirectLink());
               synchronized (apiResponse.getLinks()) {
-                FetchStreamsResponse.Link link = new FetchStreamsResponse.Link(streamName, file.getDownloadUrl(), file.isDirectLink());
-                links.put(localSeqNo, link);
+                links.put(seqNo.intValue(), link);
+                seqNo.increment();
               }
             }
           } catch (Exception e) {
@@ -230,7 +235,6 @@ public class HelloSpark {
             countDownLatch.countDown();
           }
         });
-        seqNo++;
       }
       countDownLatch.await(FETCH_TIMEOUT_MSEC, TimeUnit.MILLISECONDS);
       apiResponse.getLinks().addAll(links.values());
