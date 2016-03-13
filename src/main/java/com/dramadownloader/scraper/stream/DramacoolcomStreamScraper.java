@@ -26,6 +26,8 @@ public class DramacoolcomStreamScraper extends StreamScraper {
     DOMAINS.add("www.dramacool.cc");
     DOMAINS.add("dramacool.to");
     DOMAINS.add("www.dramacool.to");
+    DOMAINS.add("dramacool.me");
+    DOMAINS.add("www.dramacool.me");
   }
 
   @Override
