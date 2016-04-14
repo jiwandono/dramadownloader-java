@@ -89,6 +89,25 @@ public abstract class AbstractScraper<TRequest extends ScrapeRequest, TResult ex
     return connection.get();
   }
 
+  protected static String get(String url) throws IOException {
+    return get(url, new HashMap<>());
+  }
+
+  protected static String get(String url, Map<String, String> cookies) throws IOException {
+    URL urlObject = createUrl(url);
+    if(urlObject == null)
+      return null;
+
+    Connection connection = Jsoup.connect(urlObject.toString())
+        .userAgent(getRandomUserAgent())
+        .timeout(CONNECTION_TIMEOUT_MSEC)
+        .maxBodySize(MAX_BODY_SIZE)
+        .cookies(cookies)
+        .ignoreContentType(true);
+
+    return connection.execute().body();
+  }
+
   protected static String getHostname(String urlString) {
     URL url = createUrl(urlString);
     if(url != null)
@@ -136,7 +155,7 @@ public abstract class AbstractScraper<TRequest extends ScrapeRequest, TResult ex
     return params;
   }
 
-  private static URL createUrl(String urlString) {
+  protected static URL createUrl(String urlString) {
     try {
       return new URL(urlString);
     } catch (MalformedURLException e) {

@@ -1,5 +1,6 @@
 package com.dramadownloader.scraper.component;
 
+import com.dramadownloader.common.component.CommonComponent;
 import com.dramadownloader.scraper.episode.DramacoolcomEpisodeScraper;
 import com.dramadownloader.scraper.episode.EpisodeScraperFactory;
 import com.dramadownloader.scraper.episode.GooddramaEpisodeScraper;
@@ -11,6 +12,7 @@ import com.dramadownloader.scraper.stream.DramaniceStreamScraper;
 import com.dramadownloader.scraper.stream.DramatvStreamScraper;
 import com.dramadownloader.scraper.stream.GooddramaStreamScraper;
 import com.dramadownloader.scraper.stream.StreamScraperFactory;
+import com.dramadownloader.scraper.stream.TiveeStreamScraper;
 import com.dramadownloader.scraper.title.DramacoolcomTitleScraper;
 import com.dramadownloader.scraper.title.GooddramaTitleScraper;
 import com.dramadownloader.scraper.title.TitleScraperFactory;
@@ -26,7 +28,7 @@ public class ScraperComponent {
   private final EpisodeScraperFactory _episodeScraperFactory;
   private final TitleScraperFactory _titleScraperFactory;
 
-  public ScraperComponent() {
+  public ScraperComponent(CommonComponent commonComponent) {
     _scheduledExecutorService = Executors.newScheduledThreadPool(16);
 
     _fileScraperFactory = new FileScraperFactory();
@@ -37,6 +39,7 @@ public class ScraperComponent {
     _fileScraperFactory.register(new GooglevideoFileScraper());
     _fileScraperFactory.register(new Mp4UploadFileScraper());
     _fileScraperFactory.register(new StoragestreamingFileScraper());
+    _fileScraperFactory.register(new TiveeFileScraper(commonComponent.getObjectMapper()));
     _fileScraperFactory.register(new VideouploadusFileScraper());
     _fileScraperFactory.register(new ZippyshareFileScraper());
 
@@ -47,6 +50,7 @@ public class ScraperComponent {
     _streamScraperFactory.register(new DramaniceStreamScraper());
     _streamScraperFactory.register(new DramatvStreamScraper());
     _streamScraperFactory.register(new GooddramaStreamScraper(_scheduledExecutorService));
+    _streamScraperFactory.register(new TiveeStreamScraper());
 
     _episodeScraperFactory = new EpisodeScraperFactory();
     _episodeScraperFactory.register(new DramacoolcomEpisodeScraper());
