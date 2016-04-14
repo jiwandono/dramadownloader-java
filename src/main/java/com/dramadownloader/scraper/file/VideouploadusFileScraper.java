@@ -1,6 +1,7 @@
 package com.dramadownloader.scraper.file;
 
 import org.jsoup.nodes.DataNode;
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
@@ -17,6 +18,8 @@ public class VideouploadusFileScraper extends FileScraper {
     DOMAINS.add("www.videoupload.us");
     DOMAINS.add("videoupload.biz");
     DOMAINS.add("www.videoupload.biz");
+    DOMAINS.add("videoupload.space");
+    DOMAINS.add("www.videoupload.space");
   }
 
   @Override
@@ -31,6 +34,20 @@ public class VideouploadusFileScraper extends FileScraper {
     if(url.contains("/drama/video")) {
       // Leave as is.
       result.getFiles().add(new FileScrapeResult.File(url, false));
+    } else if(url.contains("/video/drama/embed-")) {
+      Set<String> fileSet = new HashSet<>();
+      Document document = getDocument(url);
+
+      Elements sources = document.getElementsByTag("source");
+      for(Element source : sources) {
+        String downloadUrl = source.attr("src");
+        fileSet.add(downloadUrl);
+        break; // For now get only the first one.
+      }
+
+      for(String downloadUrl : fileSet) {
+        result.getFiles().add(new FileScrapeResult.File(downloadUrl, true));
+      }
     } else if(url.contains("/drama/embed-")) {
       String downloadUrl = url.replace("/embed-", "/video-");
       result.getFiles().add(new FileScrapeResult.File(downloadUrl, false));
@@ -40,7 +57,9 @@ public class VideouploadusFileScraper extends FileScraper {
     } else {
       // Look in the script tag. Actually there are multiple streams, but maybe later...
       Set<String> fileSet = new HashSet<>();
-      Elements scripts = getDocument(url).getElementsByTag("script");
+      Document document = getDocument(url);
+
+      Elements scripts = document.getElementsByTag("script");
       for(Element script : scripts) {
         for(DataNode dataNode : script.dataNodes()) {
           String actualScript = dataNode.getWholeData();
