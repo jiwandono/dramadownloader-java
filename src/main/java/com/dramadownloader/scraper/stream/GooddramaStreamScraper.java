@@ -28,6 +28,8 @@ public class GooddramaStreamScraper extends StreamScraper {
     DOMAINS.add("www.gooddrama.net");
     DOMAINS.add("dramagalaxy.eu");
     DOMAINS.add("www.dramagalaxy.eu");
+    DOMAINS.add("dramagalaxy.tv");
+    DOMAINS.add("www.dramagalaxy.tv");
     DOMAINS.add("dramago.com");
     DOMAINS.add("www.dramago.com");
   }
