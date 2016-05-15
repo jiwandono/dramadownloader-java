@@ -23,6 +23,8 @@ public class DramaniceStreamScraper extends StreamScraper {
     DOMAINS.add("www.dramanice.com");
     DOMAINS.add("dramanice.to");
     DOMAINS.add("www.dramanice.to");
+    DOMAINS.add("dramanice.eu");
+    DOMAINS.add("www.dramanice.eu");
   }
 
   @Override
