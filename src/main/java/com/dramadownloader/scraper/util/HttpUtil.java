@@ -1,6 +1,5 @@
-package com.dramadownloader.scraper;
+package com.dramadownloader.scraper.util;
 
-import org.apache.log4j.Logger;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -16,12 +15,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
-public abstract class AbstractScraper<TRequest extends ScrapeRequest, TResult extends ScrapeResult> implements Scraper<TRequest, TResult> {
-  private static final Logger log = Logger.getLogger(AbstractScraper.class);
-
+public final class HttpUtil {
+  private static final List<String> USER_AGENTS;
   private static final int CONNECTION_TIMEOUT_MSEC = 30000;
   private static final int MAX_BODY_SIZE = 1024 * 1024 * 8;
-  private static final List<String> USER_AGENTS;
 
   static {
     USER_AGENTS = new ArrayList<>();
@@ -65,35 +62,15 @@ public abstract class AbstractScraper<TRequest extends ScrapeRequest, TResult ex
     USER_AGENTS.add("Opera/9.80 (Windows NT 6.0; U; en) Presto/2.8.99 Version/11.10");
   }
 
-  private static String getRandomUserAgent() {
-    int max = USER_AGENTS.size();
-    int index = ThreadLocalRandom.current().nextInt(max);
-    return USER_AGENTS.get(index);
+  private HttpUtil() {
+
   }
 
-  protected static Document getDocument(String url) throws IOException {
-    return getDocument(url, new HashMap<>());
-  }
-
-  protected static Document getDocument(String url, Map<String, String> cookies) throws IOException{
-    URL urlObject = createUrl(url);
-    if(urlObject == null)
-      return new Document("");
-
-    Connection connection = Jsoup.connect(urlObject.toString())
-        .userAgent(getRandomUserAgent())
-        .timeout(CONNECTION_TIMEOUT_MSEC)
-        .maxBodySize(MAX_BODY_SIZE)
-        .cookies(cookies);
-
-    return connection.get();
-  }
-
-  protected static String get(String url) throws IOException {
+  public static String get(String url) throws IOException {
     return get(url, new HashMap<>());
   }
 
-  protected static String get(String url, Map<String, String> cookies) throws IOException {
+  public static String get(String url, Map<String, String> cookies) throws IOException {
     URL urlObject = createUrl(url);
     if(urlObject == null)
       return null;
@@ -108,29 +85,7 @@ public abstract class AbstractScraper<TRequest extends ScrapeRequest, TResult ex
     return connection.execute().body();
   }
 
-  protected static String getHostname(String urlString) {
-    URL url = createUrl(urlString);
-    if(url != null)
-      return url.getHost().toLowerCase();
-
-    return null;
-  }
-
-  protected static String getFinalUrl(String url) throws IOException {
-    HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
-    con.setInstanceFollowRedirects(false);
-    con.connect();
-    con.getInputStream();
-
-    if(con.getResponseCode() == HttpURLConnection.HTTP_MOVED_PERM || con.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP) {
-      String redirectUrl = con.getHeaderField("Location");
-      return getFinalUrl(redirectUrl);
-    }
-
-    return url;
-  }
-
-  protected static Map<String, List<String>> getQueryParams(String url) throws IOException {
+  public static Map<String, List<String>> getQueryParams(String url) throws IOException {
     Map<String, List<String>> params = new HashMap<>();
     String[] urlParts = url.split("\\?");
     if (urlParts.length > 1) {
@@ -155,17 +110,61 @@ public abstract class AbstractScraper<TRequest extends ScrapeRequest, TResult ex
     return params;
   }
 
-  protected static URL createUrl(String urlString) {
+  public static Document getDocument(String url) throws IOException {
+    return getDocument(url, new HashMap<>());
+  }
+
+  protected static Document getDocument(String url, Map<String, String> cookies) throws IOException{
+    URL urlObject = createUrl(url);
+    if(urlObject == null)
+      return new Document("");
+
+    Connection connection = Jsoup.connect(urlObject.toString())
+        .userAgent(getRandomUserAgent())
+        .timeout(CONNECTION_TIMEOUT_MSEC)
+        .maxBodySize(MAX_BODY_SIZE)
+        .cookies(cookies);
+
+    return connection.get();
+  }
+
+  public static String getHostname(String urlString) {
+    URL url = createUrl(urlString);
+    if(url != null)
+      return url.getHost().toLowerCase();
+
+    return null;
+  }
+
+  public static URL createUrl(String urlString) {
     try {
       return new URL(urlString);
     } catch (MalformedURLException e) {
       if(e.getMessage().contains("no protocol")) {
         return createUrl("http://" + urlString);
-      } else {
-        log.warn("Unable to create URL: " + e.getMessage());
       }
+
+      throw new RuntimeException(e);
+    }
+  }
+
+  public static String getFinalUrl(String url) throws IOException {
+    HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
+    con.setInstanceFollowRedirects(false);
+    con.connect();
+    con.getInputStream();
+
+    if(con.getResponseCode() == HttpURLConnection.HTTP_MOVED_PERM || con.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP) {
+      String redirectUrl = con.getHeaderField("Location");
+      return getFinalUrl(redirectUrl);
     }
 
-    return null;
+    return url;
+  }
+
+  public static String getRandomUserAgent() {
+    int max = USER_AGENTS.size();
+    int index = ThreadLocalRandom.current().nextInt(max);
+    return USER_AGENTS.get(index);
   }
 }

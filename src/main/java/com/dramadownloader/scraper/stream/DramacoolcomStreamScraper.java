@@ -1,6 +1,7 @@
 package com.dramadownloader.scraper.stream;
 
 import com.dramadownloader.common.util.StringUtil;
+import com.dramadownloader.scraper.util.HttpUtil;
 import org.apache.log4j.Logger;
 import org.jsoup.nodes.DataNode;
 import org.jsoup.nodes.Document;
@@ -36,7 +37,7 @@ public class DramacoolcomStreamScraper extends StreamScraper {
 
     StreamScrapeResult result = new StreamScrapeResult(StreamScrapeResult.Status.FAILED);
 
-    Document doc = getDocument(url);
+    Document doc = HttpUtil.getDocument(url);
     Elements anchors = doc.select(".detail-ep-film .nav a");
 
     for(Element a : anchors) {
@@ -99,7 +100,7 @@ public class DramacoolcomStreamScraper extends StreamScraper {
 
   @Override
   public boolean isSupported(String url) {
-    String hostname = getHostname(url);
+    String hostname = HttpUtil.getHostname(url);
     return DOMAINS.contains(hostname);
   }
 }

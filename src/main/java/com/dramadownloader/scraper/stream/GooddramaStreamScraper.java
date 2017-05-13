@@ -1,6 +1,7 @@
 package com.dramadownloader.scraper.stream;
 
 import com.dramadownloader.common.util.StringUtil;
+import com.dramadownloader.scraper.util.HttpUtil;
 import org.apache.log4j.Logger;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -47,7 +48,7 @@ public class GooddramaStreamScraper extends StreamScraper {
 
     StreamScrapeResult result = new StreamScrapeResult(StreamScrapeResult.Status.FAILED);
 
-    Document doc = getDocument(url);
+    Document doc = HttpUtil.getDocument(url);
     Elements iframes = doc.select("#streams iframe[src]");
 
     List<Integer> goodPlaylists = new ArrayList<>();
@@ -56,7 +57,7 @@ public class GooddramaStreamScraper extends StreamScraper {
     int playlistIdx;
     for(playlistIdx = 0; playlistIdx < iframes.size(); playlistIdx++) {
       String src = iframes.get(playlistIdx).attr("src");
-      String hostname = getHostname(src);
+      String hostname = HttpUtil.getHostname(src);
       assert hostname != null;
       if(hostname.contains("easyvideo.me")) {
         goodPlaylists.add(playlistIdx);
@@ -89,7 +90,7 @@ public class GooddramaStreamScraper extends StreamScraper {
           String pageUrl = part.attr("href");
           _scheduledExecutorService.submit(() -> {
             try {
-              Document partDoc = getDocument(pageUrl);
+              Document partDoc = HttpUtil.getDocument(pageUrl);
               Element iframe = partDoc.select("#streams iframe[src]").get(chosenPlaylist);
               String streamUrl = iframe.attr("src");
               streams.put(localSeqNo, new StreamScrapeResult.Stream("Part " + localSeqNo, streamUrl));
@@ -126,7 +127,7 @@ public class GooddramaStreamScraper extends StreamScraper {
 
   @Override
   public boolean isSupported(String url) {
-    String hostname = getHostname(url);
+    String hostname = HttpUtil.getHostname(url);
     return DOMAINS.contains(hostname);
   }
 }

@@ -1,6 +1,7 @@
 package com.dramadownloader.scraper.title;
 
 import com.dramadownloader.core.model.Title;
+import com.dramadownloader.scraper.util.HttpUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -28,7 +29,7 @@ public class DramacoolcomTitleScraper extends TitleScraper {
 
     TitleScrapeResult result = new TitleScrapeResult(TitleScrapeResult.Status.FAILED);
 
-    Document doc = getDocument(url);
+    Document doc = HttpUtil.getDocument(url);
     Elements entires = doc.select(".listdramacool");
 
     for(Element entry : entires) {
@@ -68,7 +69,7 @@ public class DramacoolcomTitleScraper extends TitleScraper {
 
   @Override
   public boolean isSupported(String url) {
-    String hostname = getHostname(url);
+    String hostname = HttpUtil.getHostname(url);
     return DOMAINS.contains(hostname);
   }
 }

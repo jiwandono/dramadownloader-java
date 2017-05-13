@@ -1,5 +1,6 @@
 package com.dramadownloader.scraper.episode;
 
+import com.dramadownloader.scraper.util.HttpUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -27,7 +28,7 @@ public class DramacoolcomEpisodeScraper extends EpisodeScraper {
 
     EpisodeScrapeResult result = new EpisodeScrapeResult(EpisodeScrapeResult.Status.FAILED);
 
-    Document doc = getDocument(url);
+    Document doc = HttpUtil.getDocument(url);
     Elements anchors = doc.select("#view-detail a[href]");
 
     for(Element a : anchors) {
@@ -46,7 +47,7 @@ public class DramacoolcomEpisodeScraper extends EpisodeScraper {
 
   @Override
   public boolean isSupported(String url) {
-    String hostname = getHostname(url);
+    String hostname = HttpUtil.getHostname(url);
     return DOMAINS.contains(hostname);
   }
 }

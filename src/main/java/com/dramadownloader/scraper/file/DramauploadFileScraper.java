@@ -1,5 +1,6 @@
 package com.dramadownloader.scraper.file;
 
+import com.dramadownloader.scraper.util.HttpUtil;
 import org.apache.commons.codec.binary.Base64;
 import org.jsoup.nodes.DataNode;
 import org.jsoup.nodes.Document;
@@ -27,7 +28,7 @@ public class DramauploadFileScraper extends FileScraper {
 
     // Direct link is usually in "file: 'http://blahblah/blah/blah.mp4'" format, inside script tag.
 
-    Document doc = getDocument(url);
+    Document doc = HttpUtil.getDocument(url);
     Elements scripts = doc.getElementsByTag("script");
     for(Element script : scripts) {
       for(DataNode dataNode : script.dataNodes()) {
@@ -52,7 +53,7 @@ public class DramauploadFileScraper extends FileScraper {
 
   @Override
   public boolean isSupported(String url) {
-    String hostname = getHostname(url);
+    String hostname = HttpUtil.getHostname(url);
     return DOMAINS.contains(hostname);
   }
 }

@@ -1,6 +1,7 @@
 package com.dramadownloader.scraper.file;
 
 import com.dramadownloader.scraper.ScrapeResult;
+import com.dramadownloader.scraper.util.HttpUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang.StringUtils;
 
@@ -39,7 +40,7 @@ public class TiveeFileScraper extends FileScraper {
     String epNumber = null;
 
     // Look for titleLinkName
-    URL urlObject = createUrl(url);
+    URL urlObject = HttpUtil.createUrl(url);
     if(urlObject != null) {
       String urlPath = StringUtils.strip(urlObject.getPath(), "/");
       String[] pathParts = urlPath.split("/");
@@ -47,14 +48,14 @@ public class TiveeFileScraper extends FileScraper {
     }
 
     // Look for epNumber
-    Map<String, List<String>> queryParams = getQueryParams(url);
+    Map<String, List<String>> queryParams = HttpUtil.getQueryParams(url);
     if(queryParams.get("ep") != null) {
       epNumber = queryParams.get("ep").get(0);
     }
 
     if(titleLinkName != null && epNumber != null) {
-      String itUrl = getHostname(url) + "/cloudfs/" + titleLinkName + "/" + titleLinkName + "_ep" + epNumber + ".itp";
-      String json = get(itUrl);
+      String itUrl = HttpUtil.getHostname(url) + "/cloudfs/" + titleLinkName + "/" + titleLinkName + "_ep" + epNumber + ".itp";
+      String json = HttpUtil.get(itUrl);
 
       Itp itp = _objectMapper.readValue(json, Itp.class);
       for(ItpPic itpPic : itp.picHolder.values()) {
@@ -71,7 +72,7 @@ public class TiveeFileScraper extends FileScraper {
 
   @Override
   public boolean isSupported(String url) {
-    String hostname = getHostname(url);
+    String hostname = HttpUtil.getHostname(url);
     return DOMAINS.contains(hostname);
   }
 

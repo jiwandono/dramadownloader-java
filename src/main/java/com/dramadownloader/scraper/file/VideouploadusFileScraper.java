@@ -1,5 +1,6 @@
 package com.dramadownloader.scraper.file;
 
+import com.dramadownloader.scraper.util.HttpUtil;
 import org.jsoup.nodes.DataNode;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -36,7 +37,7 @@ public class VideouploadusFileScraper extends FileScraper {
       result.getFiles().add(new FileScrapeResult.File(url, false));
     } else if(url.contains("/video/drama/embed-")) {
       Set<String> fileSet = new HashSet<>();
-      Document document = getDocument(url);
+      Document document = HttpUtil.getDocument(url);
 
       Elements sources = document.getElementsByTag("source");
       for(Element source : sources) {
@@ -57,7 +58,7 @@ public class VideouploadusFileScraper extends FileScraper {
     } else {
       // Look in the script tag. Actually there are multiple streams, but maybe later...
       Set<String> fileSet = new HashSet<>();
-      Document document = getDocument(url);
+      Document document = HttpUtil.getDocument(url);
 
       Elements scripts = document.getElementsByTag("script");
       for(Element script : scripts) {
@@ -87,7 +88,7 @@ public class VideouploadusFileScraper extends FileScraper {
 
   @Override
   public boolean isSupported(String url) {
-    String hostname = getHostname(url);
+    String hostname = HttpUtil.getHostname(url);
     return DOMAINS.contains(hostname);
   }
 }

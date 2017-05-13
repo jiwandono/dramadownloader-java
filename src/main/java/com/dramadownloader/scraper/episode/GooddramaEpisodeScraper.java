@@ -1,5 +1,6 @@
 package com.dramadownloader.scraper.episode;
 
+import com.dramadownloader.scraper.util.HttpUtil;
 import org.apache.log4j.Logger;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -43,7 +44,7 @@ public class GooddramaEpisodeScraper extends EpisodeScraper {
 
     EpisodeScrapeResult result = new EpisodeScrapeResult(EpisodeScrapeResult.Status.FAILED);
 
-    Document doc = getDocument(url);
+    Document doc = HttpUtil.getDocument(url);
     Elements pages = doc.select(".pagination li button[href]");
 
     Map<Integer, List<EpisodeScrapeResult.Episode>> listMap = new HashMap<>();
@@ -55,7 +56,7 @@ public class GooddramaEpisodeScraper extends EpisodeScraper {
       _scheduledExecutorService.submit(() -> {
         try {
           String pageUrl = pages.get(localIdx).attr("href");
-          Document pageDoc = getDocument(pageUrl);
+          Document pageDoc = HttpUtil.getDocument(pageUrl);
           listMap.put(localIdx+1, processPage(pageDoc));
           latch.countDown();
         } catch (IOException e) {
@@ -82,7 +83,7 @@ public class GooddramaEpisodeScraper extends EpisodeScraper {
 
   @Override
   public boolean isSupported(String url) {
-    String hostname = getHostname(url);
+    String hostname = HttpUtil.getHostname(url);
     return DOMAINS.contains(hostname);
   }
 

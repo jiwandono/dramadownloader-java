@@ -1,10 +1,10 @@
 package com.dramadownloader.scraper.stream;
 
-import com.dramadownloader.scraper.AbstractScraper;
+import com.dramadownloader.scraper.Scraper;
 
 import java.io.IOException;
 
-public abstract class StreamScraper extends AbstractScraper<StreamScrapeRequest, StreamScrapeResult> {
+public abstract class StreamScraper implements Scraper<StreamScrapeRequest, StreamScrapeResult> {
   @Override
   public final StreamScrapeResult scrape(StreamScrapeRequest request) throws IOException {
     String url = request.getUrl();

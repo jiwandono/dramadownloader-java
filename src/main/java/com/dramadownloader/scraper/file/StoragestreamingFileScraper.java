@@ -1,5 +1,7 @@
 package com.dramadownloader.scraper.file;
 
+import com.dramadownloader.scraper.util.HttpUtil;
+
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,7 +26,7 @@ public class StoragestreamingFileScraper extends FileScraper {
 
   @Override
   public boolean isSupported(String url) {
-    String hostname = getHostname(url);
+    String hostname = HttpUtil.getHostname(url);
     return DOMAINS.contains(hostname);
   }
 }

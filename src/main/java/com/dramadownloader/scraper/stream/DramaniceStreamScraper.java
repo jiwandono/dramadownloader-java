@@ -1,6 +1,7 @@
 package com.dramadownloader.scraper.stream;
 
 import com.dramadownloader.common.util.StringUtil;
+import com.dramadownloader.scraper.util.HttpUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -33,7 +34,7 @@ public class DramaniceStreamScraper extends StreamScraper {
 
     StreamScrapeResult result = new StreamScrapeResult(StreamScrapeResult.Status.FAILED);
 
-    Document doc = getDocument(url);
+    Document doc = HttpUtil.getDocument(url);
     Set<String> streamUrls = new LinkedHashSet<>();
 
     // Look for something with url.
@@ -74,7 +75,7 @@ public class DramaniceStreamScraper extends StreamScraper {
 
   @Override
   public boolean isSupported(String url) {
-    String hostname = getHostname(url);
+    String hostname = HttpUtil.getHostname(url);
     return DOMAINS.contains(hostname);
   }
 }

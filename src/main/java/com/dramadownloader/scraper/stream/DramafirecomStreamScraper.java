@@ -1,6 +1,7 @@
 package com.dramadownloader.scraper.stream;
 
 import com.dramadownloader.common.util.StringUtil;
+import com.dramadownloader.scraper.util.HttpUtil;
 import org.jsoup.nodes.DataNode;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -25,7 +26,7 @@ public class DramafirecomStreamScraper extends StreamScraper {
 
     StreamScrapeResult result = new StreamScrapeResult(StreamScrapeResult.Status.FAILED);
 
-    Document doc = getDocument(url);
+    Document doc = HttpUtil.getDocument(url);
     Elements candidates = new Elements();
     candidates.addAll(doc.select("#main-content .post iframe[src]"));
     candidates.addAll(doc.select("#main-content .post video source[src]"));
@@ -78,7 +79,7 @@ public class DramafirecomStreamScraper extends StreamScraper {
 
   @Override
   public boolean isSupported(String url) {
-    String hostname = getHostname(url);
+    String hostname = HttpUtil.getHostname(url);
     return DOMAINS.contains(hostname);
   }
 }

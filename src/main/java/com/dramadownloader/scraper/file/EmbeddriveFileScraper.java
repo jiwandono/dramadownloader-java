@@ -2,6 +2,7 @@ package com.dramadownloader.scraper.file;
 
 import com.dramadownloader.common.util.StringUtil;
 import com.dramadownloader.scraper.ScrapeResult;
+import com.dramadownloader.scraper.util.HttpUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -27,7 +28,7 @@ public class EmbeddriveFileScraper extends FileScraper {
 
     // Direct links are available under <video> tag.
 
-    Document doc = getDocument(url);
+    Document doc = HttpUtil.getDocument(url);
     Elements sources = doc.getElementsByTag("source");
     for(Element source : sources) {
       String fileUrl = source.attr("src");
@@ -46,7 +47,7 @@ public class EmbeddriveFileScraper extends FileScraper {
 
   @Override
   public boolean isSupported(String url) {
-    String hostname = getHostname(url);
+    String hostname = HttpUtil.getHostname(url);
     return DOMAINS.contains(hostname);
   }
 }

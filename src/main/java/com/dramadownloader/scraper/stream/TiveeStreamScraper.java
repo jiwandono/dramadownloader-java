@@ -1,6 +1,7 @@
 package com.dramadownloader.scraper.stream;
 
 import com.dramadownloader.scraper.ScrapeResult;
+import com.dramadownloader.scraper.util.HttpUtil;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
@@ -22,7 +23,7 @@ public class TiveeStreamScraper extends StreamScraper {
 
     StreamScrapeResult result = new StreamScrapeResult(ScrapeResult.Status.FAILED);
 
-    Document doc = getDocument(url);
+    Document doc = HttpUtil.getDocument(url);
     String title = doc.getElementsByClass("mtitle").first().text();
 
     result.getStreams().add(new StreamScrapeResult.Stream("Tiveee", url));
@@ -37,7 +38,7 @@ public class TiveeStreamScraper extends StreamScraper {
 
   @Override
   public boolean isSupported(String url) {
-    String hostname = getHostname(url);
+    String hostname = HttpUtil.getHostname(url);
     return DOMAINS.contains(hostname);
   }
 }
