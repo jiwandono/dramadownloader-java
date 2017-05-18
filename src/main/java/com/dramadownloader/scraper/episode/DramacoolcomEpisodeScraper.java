@@ -6,24 +6,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
-public class DramacoolcomEpisodeScraper extends EpisodeScraper {
-  private static Set<String> DOMAINS;
-
-  static {
-    DOMAINS = new HashSet<>();
-    DOMAINS.add("dramacool.com");
-    DOMAINS.add("www.dramacool.com");
-    DOMAINS.add("dramacool.one");
-    DOMAINS.add("www.dramacool.one");
-    DOMAINS.add("dramacool.cc");
-    DOMAINS.add("www.dramacool.cc");
-  }
-
+public class DramacoolcomEpisodeScraper implements EpisodeScraper {
   @Override
-  protected EpisodeScrapeResult scrapeInternal(EpisodeScrapeRequest request) throws IOException {
+  public EpisodeScrapeResult scrape(EpisodeScrapeRequest request) throws IOException {
     String url = request.getUrl();
 
     EpisodeScrapeResult result = new EpisodeScrapeResult(EpisodeScrapeResult.Status.FAILED);
@@ -43,11 +29,5 @@ public class DramacoolcomEpisodeScraper extends EpisodeScraper {
       result.setStatus(EpisodeScrapeResult.Status.OK);
 
     return result;
-  }
-
-  @Override
-  public boolean isSupported(String url) {
-    String hostname = HttpUtil.getHostname(url);
-    return DOMAINS.contains(hostname);
   }
 }

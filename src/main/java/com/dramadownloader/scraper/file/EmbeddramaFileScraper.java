@@ -7,21 +7,11 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-public class EmbeddramaFileScraper extends FileScraper {
-  private static Set<String> SEQUENCES;
-
-  static {
-    SEQUENCES = new HashSet<>();
-    SEQUENCES.add("/embeddrama");
-    SEQUENCES.add("/embed1ads");
-  }
-
+public class EmbeddramaFileScraper implements FileScraper {
   @Override
-  protected FileScrapeResult scrapeInternal(FileScrapeRequest request) throws IOException {
+  public FileScrapeResult scrape(FileScrapeRequest request) throws IOException {
     // Video download URL is usually embedded in the link, base64-encoded in the GET url query.
     // Decode the encoded part to get download link.
 
@@ -49,14 +39,5 @@ public class EmbeddramaFileScraper extends FileScraper {
     }
 
     return result;
-  }
-
-  @Override
-  public boolean isSupported(String url) {
-    for(String sequence : SEQUENCES)
-      if(url.contains(sequence))
-        return true;
-
-    return false;
   }
 }

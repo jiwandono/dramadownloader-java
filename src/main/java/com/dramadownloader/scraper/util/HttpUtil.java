@@ -130,10 +130,7 @@ public final class HttpUtil {
 
   public static String getHostname(String urlString) {
     URL url = createUrl(urlString);
-    if(url != null)
-      return url.getHost().toLowerCase();
-
-    return null;
+    return url.getHost().toLowerCase();
   }
 
   public static URL createUrl(String urlString) {

@@ -7,29 +7,12 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class DramaniceStreamScraper extends StreamScraper {
-  private static Set<String> DOMAINS;
-
-  static {
-    DOMAINS = new HashSet<>();
-    DOMAINS.add("dramanice.net");
-    DOMAINS.add("www.dramanice.net");
-    DOMAINS.add("dramanice.us");
-    DOMAINS.add("www.dramanice.us");
-    DOMAINS.add("dramanice.com");
-    DOMAINS.add("www.dramanice.com");
-    DOMAINS.add("dramanice.to");
-    DOMAINS.add("www.dramanice.to");
-    DOMAINS.add("dramanice.eu");
-    DOMAINS.add("www.dramanice.eu");
-  }
-
+public class DramaniceStreamScraper implements StreamScraper {
   @Override
-  protected StreamScrapeResult scrapeInternal(StreamScrapeRequest request) throws IOException {
+  public StreamScrapeResult scrape(StreamScrapeRequest request) throws IOException {
     String url = request.getUrl();
 
     StreamScrapeResult result = new StreamScrapeResult(StreamScrapeResult.Status.FAILED);
@@ -71,11 +54,5 @@ public class DramaniceStreamScraper extends StreamScraper {
     }
 
     return result;
-  }
-
-  @Override
-  public boolean isSupported(String url) {
-    String hostname = HttpUtil.getHostname(url);
-    return DOMAINS.contains(hostname);
   }
 }

@@ -5,20 +5,10 @@ import com.dramadownloader.scraper.util.HttpUtil;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
-public class TiveeStreamScraper extends StreamScraper {
-  private static Set<String> DOMAINS;
-
-  static {
-    DOMAINS = new HashSet<>();
-    DOMAINS.add("tiveee.com");
-    DOMAINS.add("www.tiveee.com");
-  }
-
+public class TiveeStreamScraper implements StreamScraper {
   @Override
-  protected StreamScrapeResult scrapeInternal(StreamScrapeRequest request) throws IOException {
+  public StreamScrapeResult scrape(StreamScrapeRequest request) throws IOException {
     String url = request.getUrl();
 
     StreamScrapeResult result = new StreamScrapeResult(ScrapeResult.Status.FAILED);
@@ -34,11 +24,5 @@ public class TiveeStreamScraper extends StreamScraper {
     }
 
     return result;
-  }
-
-  @Override
-  public boolean isSupported(String url) {
-    String hostname = HttpUtil.getHostname(url);
-    return DOMAINS.contains(hostname);
   }
 }

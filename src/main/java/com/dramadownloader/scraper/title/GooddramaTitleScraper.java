@@ -7,24 +7,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
-public class GooddramaTitleScraper extends TitleScraper {
-  private static Set<String> DOMAINS;
-
-  static {
-    DOMAINS = new HashSet<>();
-    DOMAINS.add("gooddrama.net");
-    DOMAINS.add("www.gooddrama.net");
-    DOMAINS.add("dramagalaxy.eu");
-    DOMAINS.add("www.dramagalaxy.eu");
-    DOMAINS.add("dramago.com");
-    DOMAINS.add("www.dramago.com");
-  }
-
+public class GooddramaTitleScraper implements TitleScraper {
   @Override
-  protected TitleScrapeResult scrapeInternal(TitleScrapeRequest request) throws IOException {
+  public TitleScrapeResult scrape(TitleScrapeRequest request) throws IOException {
     String url = request.getUrl();
     String host = HttpUtil.getHostname(url);
     String providerId;
@@ -60,11 +46,5 @@ public class GooddramaTitleScraper extends TitleScraper {
     }
 
     return result;
-  }
-
-  @Override
-  public boolean isSupported(String url) {
-    String hostname = HttpUtil.getHostname(url);
-    return DOMAINS.contains(hostname);
   }
 }

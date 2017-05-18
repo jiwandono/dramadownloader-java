@@ -2,21 +2,10 @@ package com.dramadownloader.scraper.file;
 
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.HashSet;
-import java.util.Set;
 
-public class GooglevideoFileScraper extends FileScraper {
-  private static Set<String> SEQUENCES;
-
-  static {
-    SEQUENCES = new HashSet<>();
-    SEQUENCES.add("googlevideo.com/");
-    SEQUENCES.add("googleusercontent.com/");
-    SEQUENCES.add("blogspot.com/");
-  }
-
+public class GooglevideoFileScraper implements FileScraper {
   @Override
-  protected FileScrapeResult scrapeInternal(FileScrapeRequest request) throws IOException {
+  public FileScrapeResult scrape(FileScrapeRequest request) throws IOException {
     String url = request.getUrl();
 
     // This won't work because the final URL is IP-restricted.
@@ -32,14 +21,5 @@ public class GooglevideoFileScraper extends FileScraper {
     result.getFiles().add(new FileScrapeResult.File(url, true));
 
     return result;
-  }
-
-  @Override
-  public boolean isSupported(String url) {
-    for(String sequence : SEQUENCES)
-      if(url.contains(sequence))
-        return true;
-
-    return false;
   }
 }

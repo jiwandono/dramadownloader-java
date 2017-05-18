@@ -10,21 +10,9 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-public class VideouploadusFileScraper extends FileScraper {
-  private static Set<String> DOMAINS;
-
-  static {
-    DOMAINS = new HashSet<>();
-    DOMAINS.add("videoupload.us");
-    DOMAINS.add("www.videoupload.us");
-    DOMAINS.add("videoupload.biz");
-    DOMAINS.add("www.videoupload.biz");
-    DOMAINS.add("videoupload.space");
-    DOMAINS.add("www.videoupload.space");
-  }
-
+public class VideouploadusFileScraper implements FileScraper {
   @Override
-  protected FileScrapeResult scrapeInternal(FileScrapeRequest request) throws IOException {
+  public FileScrapeResult scrape(FileScrapeRequest request) throws IOException {
     // URL is usually in http://videoupload.us/drama/embed-MTU5NDI=.html format.
     // Just change embed- to video- then it will show a page with download link.
 
@@ -84,11 +72,5 @@ public class VideouploadusFileScraper extends FileScraper {
     }
 
     return result;
-  }
-
-  @Override
-  public boolean isSupported(String url) {
-    String hostname = HttpUtil.getHostname(url);
-    return DOMAINS.contains(hostname);
   }
 }

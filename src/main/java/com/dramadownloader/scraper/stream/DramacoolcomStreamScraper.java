@@ -9,30 +9,12 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
-public class DramacoolcomStreamScraper extends StreamScraper {
+public class DramacoolcomStreamScraper implements StreamScraper {
   private static final Logger log = Logger.getLogger(DramacoolcomStreamScraper.class);
 
-  private static Set<String> DOMAINS;
-
-  static {
-    DOMAINS = new HashSet<>();
-    DOMAINS.add("dramacool.com");
-    DOMAINS.add("www.dramacool.com");
-    DOMAINS.add("dramacool.one");
-    DOMAINS.add("www.dramacool.one");
-    DOMAINS.add("dramacool.cc");
-    DOMAINS.add("www.dramacool.cc");
-    DOMAINS.add("dramacool.to");
-    DOMAINS.add("www.dramacool.to");
-    DOMAINS.add("dramacool.me");
-    DOMAINS.add("www.dramacool.me");
-  }
-
   @Override
-  protected StreamScrapeResult scrapeInternal(StreamScrapeRequest request) throws IOException {
+  public StreamScrapeResult scrape(StreamScrapeRequest request) throws IOException {
     String url = request.getUrl();
 
     StreamScrapeResult result = new StreamScrapeResult(StreamScrapeResult.Status.FAILED);
@@ -96,11 +78,5 @@ public class DramacoolcomStreamScraper extends StreamScraper {
     }
 
     return result;
-  }
-
-  @Override
-  public boolean isSupported(String url) {
-    String hostname = HttpUtil.getHostname(url);
-    return DOMAINS.contains(hostname);
   }
 }

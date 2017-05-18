@@ -8,20 +8,10 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.HashSet;
-import java.util.Set;
 
-public class EasyvideoFileScraper extends FileScraper {
-  private static Set<String> DOMAINS;
-
-  static {
-    DOMAINS = new HashSet<>();
-    DOMAINS.add("easyvideo.me");
-    DOMAINS.add("www.easyvideo.me");
-  }
-
+public class EasyvideoFileScraper implements FileScraper {
   @Override
-  protected FileScrapeResult scrapeInternal(FileScrapeRequest request) throws IOException {
+  public FileScrapeResult scrape(FileScrapeRequest request) throws IOException {
     String url = request.getUrl();
 
     FileScrapeResult result = new FileScrapeResult(FileScrapeResult.Status.FAILED);
@@ -60,11 +50,5 @@ public class EasyvideoFileScraper extends FileScraper {
     }
 
     return result;
-  }
-
-  @Override
-  public boolean isSupported(String url) {
-    String hostname = HttpUtil.getHostname(url);
-    return DOMAINS.contains(hostname);
   }
 }

@@ -1,22 +1,10 @@
 package com.dramadownloader.scraper.file;
 
-import com.dramadownloader.scraper.util.HttpUtil;
-
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
-public class Mp4UploadFileScraper extends FileScraper {
-  private static final Set<String> DOMAINS;
-
-  static {
-    DOMAINS = new HashSet<>();
-    DOMAINS.add("mp4upload.com");
-    DOMAINS.add("www.mp4upload.com");
-  }
-
+public class Mp4UploadFileScraper implements FileScraper {
   @Override
-  protected FileScrapeResult scrapeInternal(FileScrapeRequest request) throws IOException {
+  public FileScrapeResult scrape(FileScrapeRequest request) throws IOException {
     // URL is usually in http://www.mp4upload.com/embed-cyyg0nztqbyh.html format.
     // Just remove the embed- part then it will show a page with download link.
 
@@ -32,11 +20,5 @@ public class Mp4UploadFileScraper extends FileScraper {
     }
 
     return result;
-  }
-
-  @Override
-  public boolean isSupported(String url) {
-    String hostname = HttpUtil.getHostname(url);
-    return DOMAINS.contains(hostname);
   }
 }

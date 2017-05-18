@@ -31,34 +31,97 @@ public class ScraperComponent {
   public ScraperComponent(CommonComponent commonComponent) {
     _scheduledExecutorService = Executors.newScheduledThreadPool(16);
 
+    // Instance registration
+
     _fileScraperFactory = new FileScraperFactory();
-    _fileScraperFactory.register(new EmbeddriveFileScraper());
-    _fileScraperFactory.register(new DramauploadFileScraper());
-    _fileScraperFactory.register(new EasyvideoFileScraper());
-    _fileScraperFactory.register(new EmbeddramaFileScraper());
-    _fileScraperFactory.register(new GooglevideoFileScraper());
-    _fileScraperFactory.register(new Mp4UploadFileScraper());
-    _fileScraperFactory.register(new StoragestreamingFileScraper());
-    _fileScraperFactory.register(new TiveeFileScraper(commonComponent.getObjectMapper()));
-    _fileScraperFactory.register(new VideouploadusFileScraper());
-    _fileScraperFactory.register(new ZippyshareFileScraper());
+    _fileScraperFactory.register(EmbeddriveFileScraper.class, new EmbeddriveFileScraper());
+    _fileScraperFactory.register(DramauploadFileScraper.class, new DramauploadFileScraper());
+    _fileScraperFactory.register(EasyvideoFileScraper.class, new EasyvideoFileScraper());
+    _fileScraperFactory.register(EmbeddramaFileScraper.class, new EmbeddramaFileScraper());
+    _fileScraperFactory.register(GooglevideoFileScraper.class, new GooglevideoFileScraper());
+    _fileScraperFactory.register(Mp4UploadFileScraper.class, new Mp4UploadFileScraper());
+    _fileScraperFactory.register(StoragestreamingFileScraper.class, new StoragestreamingFileScraper());
+    _fileScraperFactory.register(TiveeFileScraper.class, new TiveeFileScraper(commonComponent.getObjectMapper()));
+    _fileScraperFactory.register(VideouploadusFileScraper.class, new VideouploadusFileScraper());
+    _fileScraperFactory.register(ZippyshareFileScraper.class, new ZippyshareFileScraper());
 
     _streamScraperFactory = new StreamScraperFactory();
-    _streamScraperFactory.register(new AnimestvStreamScraper());
-    _streamScraperFactory.register(new DramacoolcomStreamScraper());
-    _streamScraperFactory.register(new DramafirecomStreamScraper());
-    _streamScraperFactory.register(new DramaniceStreamScraper());
-    _streamScraperFactory.register(new DramatvStreamScraper());
-    _streamScraperFactory.register(new GooddramaStreamScraper(_scheduledExecutorService));
-    _streamScraperFactory.register(new TiveeStreamScraper());
+    _streamScraperFactory.register(AnimestvStreamScraper.class, new AnimestvStreamScraper());
+    _streamScraperFactory.register(DramacoolcomStreamScraper.class, new DramacoolcomStreamScraper());
+    _streamScraperFactory.register(DramafirecomStreamScraper.class, new DramafirecomStreamScraper());
+    _streamScraperFactory.register(DramaniceStreamScraper.class, new DramaniceStreamScraper());
+    _streamScraperFactory.register(DramatvStreamScraper.class, new DramatvStreamScraper());
+    _streamScraperFactory.register(GooddramaStreamScraper.class, new GooddramaStreamScraper(_scheduledExecutorService));
+    _streamScraperFactory.register(TiveeStreamScraper.class, new TiveeStreamScraper());
 
     _episodeScraperFactory = new EpisodeScraperFactory();
-    _episodeScraperFactory.register(new DramacoolcomEpisodeScraper());
-    _episodeScraperFactory.register(new GooddramaEpisodeScraper(_scheduledExecutorService));
+    _episodeScraperFactory.register(DramacoolcomEpisodeScraper.class, new DramacoolcomEpisodeScraper());
+    _episodeScraperFactory.register(GooddramaEpisodeScraper.class, new GooddramaEpisodeScraper(_scheduledExecutorService));
 
     _titleScraperFactory = new TitleScraperFactory();
-    _titleScraperFactory.register(new DramacoolcomTitleScraper());
-    _titleScraperFactory.register(new GooddramaTitleScraper());
+    _titleScraperFactory.register(DramacoolcomTitleScraper.class, new DramacoolcomTitleScraper());
+    _titleScraperFactory.register(GooddramaTitleScraper.class, new GooddramaTitleScraper());
+
+    // Domain registration
+
+    _fileScraperFactory.register("blogspot.com", GooglevideoFileScraper.class);
+    _fileScraperFactory.register("googleusercontent.com", GooglevideoFileScraper.class);
+    _fileScraperFactory.register("googlevideo.com", GooglevideoFileScraper.class);
+    _fileScraperFactory.register("cdn.dramacool.to", EmbeddriveFileScraper.class);
+    _fileScraperFactory.register("cdn.dramanice.to", EmbeddriveFileScraper.class);
+    _fileScraperFactory.register("dramaupload.com", DramauploadFileScraper.class);
+    _fileScraperFactory.register("easyvideo.me", EasyvideoFileScraper.class);
+    _fileScraperFactory.register("mp4upload.com", Mp4UploadFileScraper.class);
+    _fileScraperFactory.register("storagestreaming.com", StoragestreamingFileScraper.class);
+    _fileScraperFactory.register("tivee.com", TiveeFileScraper.class);
+    _fileScraperFactory.register("videoupload.biz", VideouploadusFileScraper.class);
+    _fileScraperFactory.register("videoupload.space", VideouploadusFileScraper.class);
+    _fileScraperFactory.register("videoupload.us", VideouploadusFileScraper.class);
+    _fileScraperFactory.register("zippyshare.com", ZippyshareFileScraper.class);
+
+    _streamScraperFactory.register("anime4you.net", AnimestvStreamScraper.class);
+    _streamScraperFactory.register("animestv.eu", AnimestvStreamScraper.class);
+    _streamScraperFactory.register("animestv.us", AnimestvStreamScraper.class);
+    _streamScraperFactory.register("animetv.in", AnimestvStreamScraper.class);
+    _streamScraperFactory.register("animetv.one", AnimestvStreamScraper.class);
+    _streamScraperFactory.register("animetv.online", AnimestvStreamScraper.class);
+    _streamScraperFactory.register("animetv.top", AnimestvStreamScraper.class);
+    _streamScraperFactory.register("drama.to", DramatvStreamScraper.class);
+    _streamScraperFactory.register("dramacool.cc", DramacoolcomStreamScraper.class);
+    _streamScraperFactory.register("dramacool.com", DramacoolcomStreamScraper.class);
+    _streamScraperFactory.register("dramacool.me", DramacoolcomStreamScraper.class);
+    _streamScraperFactory.register("dramacool.one", DramacoolcomStreamScraper.class);
+    _streamScraperFactory.register("dramacool.to", DramacoolcomStreamScraper.class);
+    _streamScraperFactory.register("dramacool.tv", DramatvStreamScraper.class);
+    _streamScraperFactory.register("dramafire.com", DramafirecomStreamScraper.class);
+    _streamScraperFactory.register("dramagalaxy.eu", GooddramaStreamScraper.class);
+    _streamScraperFactory.register("dramagalaxy.tv", GooddramaStreamScraper.class);
+    _streamScraperFactory.register("dramago.com", GooddramaStreamScraper.class);
+    _streamScraperFactory.register("dramanice.com", DramaniceStreamScraper.class);
+    _streamScraperFactory.register("dramanice.eu", DramaniceStreamScraper.class);
+    _streamScraperFactory.register("dramanice.net", DramaniceStreamScraper.class);
+    _streamScraperFactory.register("dramanice.to", DramaniceStreamScraper.class);
+    _streamScraperFactory.register("dramanice.us", DramaniceStreamScraper.class);
+    _streamScraperFactory.register("dramatv.co", DramatvStreamScraper.class);
+    _streamScraperFactory.register("dramatv.eu", DramatvStreamScraper.class);
+    _streamScraperFactory.register("dramatv.tv", DramatvStreamScraper.class);
+    _streamScraperFactory.register("dramatv.us", DramatvStreamScraper.class);
+    _streamScraperFactory.register("gooddrama.net", GooddramaStreamScraper.class);
+    _streamScraperFactory.register("tiveee.com", TiveeStreamScraper.class);
+
+    _episodeScraperFactory.register("dramacool.cc", DramacoolcomEpisodeScraper.class);
+    _episodeScraperFactory.register("dramacool.com", DramacoolcomEpisodeScraper.class);
+    _episodeScraperFactory.register("dramacool.one", DramacoolcomEpisodeScraper.class);
+    _episodeScraperFactory.register("dramagalaxy.eu", GooddramaEpisodeScraper.class);
+    _episodeScraperFactory.register("dramago.com", GooddramaEpisodeScraper.class);
+    _episodeScraperFactory.register("gooddrama.net", GooddramaEpisodeScraper.class);
+
+    _titleScraperFactory.register("dramacool.cc", DramacoolcomTitleScraper.class);
+    _titleScraperFactory.register("dramacool.com", DramacoolcomTitleScraper.class);
+    _titleScraperFactory.register("dramacool.one", DramacoolcomTitleScraper.class);
+    _titleScraperFactory.register("dramagalaxy.eu", GooddramaTitleScraper.class);
+    _titleScraperFactory.register("dramago.com", GooddramaTitleScraper.class);
+    _titleScraperFactory.register("gooddrama.net", GooddramaTitleScraper.class);
   }
 
   public FileScraperFactory getFileScraperFactory() {

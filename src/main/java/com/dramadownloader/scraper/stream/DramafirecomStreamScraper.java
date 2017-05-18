@@ -8,20 +8,11 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
-public class DramafirecomStreamScraper extends StreamScraper {
-  private static Set<String> DOMAINS;
-
-  static {
-    DOMAINS = new HashSet<>();
-    DOMAINS.add("dramafire.com");
-    DOMAINS.add("www.dramafire.com");
-  }
+public class DramafirecomStreamScraper implements StreamScraper {
 
   @Override
-  protected StreamScrapeResult scrapeInternal(StreamScrapeRequest request) throws IOException {
+  public StreamScrapeResult scrape(StreamScrapeRequest request) throws IOException {
     String url = request.getUrl();
 
     StreamScrapeResult result = new StreamScrapeResult(StreamScrapeResult.Status.FAILED);
@@ -75,11 +66,5 @@ public class DramafirecomStreamScraper extends StreamScraper {
     }
 
     return result;
-  }
-
-  @Override
-  public boolean isSupported(String url) {
-    String hostname = HttpUtil.getHostname(url);
-    return DOMAINS.contains(hostname);
   }
 }

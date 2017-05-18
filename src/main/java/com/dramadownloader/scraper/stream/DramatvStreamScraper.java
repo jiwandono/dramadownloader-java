@@ -8,30 +8,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
-public class DramatvStreamScraper extends StreamScraper {
-  private static Set<String> DOMAINS;
-
-  static {
-    DOMAINS = new HashSet<>();
-    DOMAINS.add("dramatv.tv");
-    DOMAINS.add("www.dramatv.tv");
-    DOMAINS.add("dramatv.us");
-    DOMAINS.add("www.dramatv.us");
-    DOMAINS.add("dramatv.co");
-    DOMAINS.add("www.dramatv.co");
-    DOMAINS.add("dramacool.tv");
-    DOMAINS.add("www.dramacool.tv");
-    DOMAINS.add("dramatv.eu");
-    DOMAINS.add("www.dramatv.eu");
-    DOMAINS.add("drama.to");
-    DOMAINS.add("www.drama.to");
-  }
-
+public class DramatvStreamScraper implements StreamScraper {
   @Override
-  protected StreamScrapeResult scrapeInternal(StreamScrapeRequest request) throws IOException {
+  public StreamScrapeResult scrape(StreamScrapeRequest request) throws IOException {
     String url = request.getUrl();
 
     StreamScrapeResult result = new StreamScrapeResult(StreamScrapeResult.Status.FAILED);
@@ -68,11 +48,5 @@ public class DramatvStreamScraper extends StreamScraper {
     }
 
     return result;
-  }
-
-  @Override
-  public boolean isSupported(String url) {
-    String hostname = HttpUtil.getHostname(url);
-    return DOMAINS.contains(hostname);
   }
 }

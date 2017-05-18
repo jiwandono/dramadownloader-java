@@ -9,28 +9,14 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class GooddramaEpisodeScraper extends EpisodeScraper {
+public class GooddramaEpisodeScraper implements EpisodeScraper {
   private static final Logger log = Logger.getLogger(GooddramaEpisodeScraper.class);
-
-  private static Set<String> DOMAINS;
-
-  static {
-    DOMAINS = new HashSet<>();
-    DOMAINS.add("gooddrama.net");
-    DOMAINS.add("www.gooddrama.net");
-    DOMAINS.add("dramagalaxy.eu");
-    DOMAINS.add("www.dramagalaxy.eu");
-    DOMAINS.add("dramago.com");
-    DOMAINS.add("www.dramago.com");
-  }
 
   private final ScheduledExecutorService _scheduledExecutorService;
 
@@ -39,7 +25,7 @@ public class GooddramaEpisodeScraper extends EpisodeScraper {
   }
 
   @Override
-  protected EpisodeScrapeResult scrapeInternal(EpisodeScrapeRequest request) throws IOException {
+  public EpisodeScrapeResult scrape(EpisodeScrapeRequest request) throws IOException {
     String url = request.getUrl();
 
     EpisodeScrapeResult result = new EpisodeScrapeResult(EpisodeScrapeResult.Status.FAILED);
@@ -79,12 +65,6 @@ public class GooddramaEpisodeScraper extends EpisodeScraper {
       result.setStatus(EpisodeScrapeResult.Status.OK);
 
     return result;
-  }
-
-  @Override
-  public boolean isSupported(String url) {
-    String hostname = HttpUtil.getHostname(url);
-    return DOMAINS.contains(hostname);
   }
 
   private List<EpisodeScrapeResult.Episode> processPage(Document doc) {
