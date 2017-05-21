@@ -82,6 +82,7 @@ public class ScraperComponent {
     _streamScraperFactory.register("dramafire.com", DramafirecomStreamScraper.class);
     _streamScraperFactory.register("dramagalaxy.tv", GooddramaStreamScraper.class);
     _streamScraperFactory.register("dramago.com", GooddramaStreamScraper.class);
+    _streamScraperFactory.register("dramanice.es", DramaniceStreamScraper.class);
     _streamScraperFactory.register("gooddrama.to", GooddramaStreamScraper.class);
     _streamScraperFactory.register("thedramacool.com", ThedramacoolcomStreamScraper.class);
 
