@@ -123,7 +123,8 @@ public final class HttpUtil {
         .userAgent(getRandomUserAgent())
         .timeout(CONNECTION_TIMEOUT_MSEC)
         .maxBodySize(MAX_BODY_SIZE)
-        .cookies(cookies);
+        .cookies(cookies)
+        .header("accept-encoding", "gzip;q=0,deflate;q=0");
 
     return connection.get();
   }

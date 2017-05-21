@@ -12,20 +12,13 @@ public class TestDramacoolcomFetcher extends StreamScraperTestBase {
 
   private static final List<String> urls = new ArrayList<>();
   static {
-    urls.add("http://www.dramacool.com/moon-river-episode-22.html");
-    urls.add("http://www.dramacool.com/my-love-from-the-star-episode-3.html");
-    urls.add("http://www.dramacool.com/bloody-monday-season-1-episode-1.html");
-    urls.add("http://www.dramacool.com/iris-episode-1.html");
-    urls.add("http://www.dramacool.com/running-man-episode-91.html");
-    urls.add("http://www.dramacool.com/i-summon-you-gold-episode-1.html");
-    urls.add("www.dramacool.com/dr-mo-clinic-dr-ian--episode-6.html");
-    urls.add("www.dramacool.com/my-girlfriend-is-a-gumiho-episode-11.html");
-    urls.add("dramacool.com/-empresses-in-the-palace-episode-71.html");
-    urls.add("http://dramacool.com/noble-my-love-episode-20.html");
-    urls.add("http://www.dramacool.com/second-time-twenty-years-old-episode-9.html");
-    urls.add("http://dramacool.com/yong-pal-episode-16.html");
-    urls.add("http://dramacool.com/on-the-wings-of-love-episode-26.html");
-    urls.add("http://dramacool.com/second-time-twenty-years-old-episode-8.html");
+    urls.add("http://www.dramacool.su/tunnel-korean-drama-episode-15.html");
+    urls.add("http://www.dramacool.su/moon-river-episode-22.html");
+    urls.add("http://www.dramacool.su/my-love-from-the-star-episode-3.html");
+    urls.add("http://www.dramacool.su/bloody-monday-season-1-episode-1.html");
+    urls.add("http://www.dramacool.su/iris-episode-1.html");
+    urls.add("http://www.dramacool.su/running-man-episode-91.html");
+    urls.add("http://www.dramacool.su/i-summon-you-gold-episode-1.html");
   }
 
   @Test

@@ -12,7 +12,7 @@ public class TestDramacoolcomEpisodeScraper extends EpisodeScraperTestBase {
 
   private static final List<String> urls = new ArrayList<>();
   static {
-    urls.add("http://www.dramacool.com/drama-detail/we-got-married-s1-.html");
+    urls.add("http://www.thedramacool.com/drama-detail/we-got-married-s1-.html");
   }
 
   @Test
