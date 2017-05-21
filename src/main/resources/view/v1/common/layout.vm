@@ -33,11 +33,11 @@
 		  fjs.parentNode.insertBefore(js, fjs);
 		}(document, 'script', 'facebook-jssdk'));</script>
 		<div class="container">
-			#parse("view/common/header.vm")
+			#parse("view/v1/common/header.vm")
 
 			$content
 
-      #parse("view/common/footer.vm")
+      #parse("view/v1/common/footer.vm")
 		</div>
 
 		<script>

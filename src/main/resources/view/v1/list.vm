@@ -1,4 +1,4 @@
-#parse("view/common/layout.vm")
+#parse("view/v1/common/layout.vm")
 
 #macro(list_content)
 <div class="info like-share">

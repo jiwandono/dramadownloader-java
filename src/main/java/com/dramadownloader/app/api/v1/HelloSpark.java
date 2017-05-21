@@ -88,7 +88,7 @@ public class HelloSpark {
         Map<String, Object> context = new HashMap<>();
         context.put("requestUrl", request.url());
         context.put("esc", new EscapeTool());
-        renderResult = templateEngine.render(new ModelAndView(context, "view/index.vm"));
+        renderResult = templateEngine.render(new ModelAndView(context, "view/v1/index.vm"));
         memcachedClient.set("page_index", 60, renderResult);
       } else {
         renderResult = (String) cachedResponse;
@@ -122,7 +122,7 @@ public class HelloSpark {
         context.put("stringUtil", StringUtil.class);
         context.put("title", "List of Titles - " + String.valueOf(first).toUpperCase() + " - DramaDownloader.com");
         context.put("dramaTitles", titleAccessor.getTitlesByPrefix(prefix));
-        renderResult = templateEngine.render(new ModelAndView(context, "view/list.vm"));
+        renderResult = templateEngine.render(new ModelAndView(context, "view/v1/list.vm"));
         memcachedClient.set("page_list_" + first, 7 * 86400, renderResult);
       } else {
         renderResult = (String) cachedResponse;
@@ -159,7 +159,7 @@ public class HelloSpark {
         context.put("stringUtil", StringUtil.class);
         context.put("title", title.getTitle() + " - Source: " + title.getProviderId() + " - DramaDownloader.com");
         context.put("dramaTitle", title);
-        renderResult = templateEngine.render(new ModelAndView(context, "view/detail.vm"));
+        renderResult = templateEngine.render(new ModelAndView(context, "view/v1/detail.vm"));
         memcachedClient.set("page_detail_" + id, 7 * 86400, renderResult);
       } else {
         renderResult = (String) cachedResponse;

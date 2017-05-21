@@ -1,4 +1,4 @@
-#parse("view/common/layout.vm")
+#parse("view/v1/common/layout.vm")
 
 #macro(index_content)
 			<div id="content">
