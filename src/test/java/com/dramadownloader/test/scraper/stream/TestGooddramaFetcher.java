@@ -13,10 +13,7 @@ public class TestGooddramaFetcher extends StreamScraperTestBase {
 
   private static final List<String> urls = new ArrayList<>();
   static {
-    urls.add("http://www.gooddrama.net/japanese-drama/kamen-rider-w-episode-48");
-    urls.add("http://www.gooddrama.net/korean-drama/i-am-sam-episode-1");
-    urls.add("www.gooddrama.net/korean-drama/the-merchant-gaekju-episode-5");
-    urls.add("http://www.gooddrama.net/korean-drama/empress-ki-episode-2");
+    urls.add("http://www.dramagalaxy.tv/chicago-typewriter-episode-12");
   }
 
   @Test

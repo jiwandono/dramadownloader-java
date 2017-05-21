@@ -12,6 +12,7 @@ public class TestEasyvideoFetcher extends FileScraperTestBase {
 
   private static final List<String> urls = new ArrayList<>();
   static {
+    urls.add("http://easyvideo.me/gogo/?w=745&h=450&file=chicago_typewritter_-_12_clip1.mp4&sv=1");
     urls.add("http://easyvideo.me/gogo/?w=790&h=480&file=i_am_sam_-_01_part_1.flv&sv=1");
     urls.add("http://easyvideo.me/gogo/?w=790&h=480&file=i_am_sam_-_01_part_2.flv&sv=1");
     urls.add("http://easyvideo.me/gogo/?w=790&h=480&file=the_merchant_gaekju_-_05_clip3.mp4&sv=1");
