@@ -28,7 +28,7 @@ public class ScraperComponent {
   private final EpisodeScraperFactory _episodeScraperFactory;
   private final TitleScraperFactory _titleScraperFactory;
 
-  public ScraperComponent(CommonComponent commonComponent) {
+  public ScraperComponent() {
     _scheduledExecutorService = Executors.newScheduledThreadPool(16);
 
     // Instance registration

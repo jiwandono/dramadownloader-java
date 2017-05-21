@@ -52,7 +52,7 @@ public class HelloSpark {
 
   private static final CommonComponent commonComponent = new CommonComponent();
   private static final MemcachedComponent memcachedComponent = new MemcachedComponent();
-  private static final ScraperComponent scraperComponent = new ScraperComponent(commonComponent);
+  private static final ScraperComponent scraperComponent = new ScraperComponent();
   private static final VelocityComponent velocityComponent = new VelocityComponent();
 
   private static final MemcachedClient memcachedClient = memcachedComponent.getMemcachedClient();
