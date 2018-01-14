@@ -7,6 +7,7 @@ import com.dramadownloader.scraper.episode.GooddramaEpisodeScraper;
 import com.dramadownloader.scraper.file.*;
 import com.dramadownloader.scraper.stream.AnimestvStreamScraper;
 import com.dramadownloader.scraper.stream.DramacoolcomStreamScraper;
+import com.dramadownloader.scraper.stream.DramacoolsioStreamScraper;
 import com.dramadownloader.scraper.stream.ThedramacoolcomStreamScraper;
 import com.dramadownloader.scraper.stream.DramafirecomStreamScraper;
 import com.dramadownloader.scraper.stream.DramaniceStreamScraper;
@@ -43,12 +44,14 @@ public class ScraperComponent {
     _fileScraperFactory.register(OpenloadFileScraper.class, new OpenloadFileScraper());
     _fileScraperFactory.register(StoragestreamingFileScraper.class, new StoragestreamingFileScraper());
     _fileScraperFactory.register(VideothedramacoolFileScraper.class, new VideothedramacoolFileScraper());
+    _fileScraperFactory.register(VideouploadspaceFileScraper.class, new VideouploadspaceFileScraper());
     _fileScraperFactory.register(VideouploadusFileScraper.class, new VideouploadusFileScraper());
     _fileScraperFactory.register(ZippyshareFileScraper.class, new ZippyshareFileScraper());
 
     _streamScraperFactory = new StreamScraperFactory();
     _streamScraperFactory.register(AnimestvStreamScraper.class, new AnimestvStreamScraper());
     _streamScraperFactory.register(DramacoolcomStreamScraper.class, new DramacoolcomStreamScraper());
+    _streamScraperFactory.register(DramacoolsioStreamScraper.class, new DramacoolsioStreamScraper());
     _streamScraperFactory.register(ThedramacoolcomStreamScraper.class, new ThedramacoolcomStreamScraper());
     _streamScraperFactory.register(DramafirecomStreamScraper.class, new DramafirecomStreamScraper());
     _streamScraperFactory.register(DramaniceStreamScraper.class, new DramaniceStreamScraper());
@@ -73,18 +76,20 @@ public class ScraperComponent {
     _fileScraperFactory.register("openload.co", OpenloadFileScraper.class);
     _fileScraperFactory.register("storagestreaming.com", StoragestreamingFileScraper.class);
     _fileScraperFactory.register("thedramacool.com", VideothedramacoolFileScraper.class);
-    _fileScraperFactory.register("videoupload.space", VideouploadusFileScraper.class);
+    _fileScraperFactory.register("videoupload.space", VideouploadspaceFileScraper.class);
     _fileScraperFactory.register("videoupload.us", VideouploadusFileScraper.class);
     _fileScraperFactory.register("zippyshare.com", ZippyshareFileScraper.class);
 
     _streamScraperFactory.register("animetv.to", AnimestvStreamScraper.class);
     _streamScraperFactory.register("dramacool.su", DramacoolcomStreamScraper.class);
+    _streamScraperFactory.register("dramacools.io", DramacoolsioStreamScraper.class);
     _streamScraperFactory.register("dramafire.com", DramafirecomStreamScraper.class);
     _streamScraperFactory.register("dramagalaxy.tv", GooddramaStreamScraper.class);
     _streamScraperFactory.register("dramago.com", GooddramaStreamScraper.class);
     _streamScraperFactory.register("dramanice.es", DramaniceStreamScraper.class);
     _streamScraperFactory.register("gooddrama.to", GooddramaStreamScraper.class);
     _streamScraperFactory.register("thedramacool.com", ThedramacoolcomStreamScraper.class);
+    _streamScraperFactory.register("watchasian.co", DramacoolsioStreamScraper.class);
 
     _episodeScraperFactory.register("dramagalaxy.tv", GooddramaEpisodeScraper.class);
     _episodeScraperFactory.register("dramago.com", GooddramaEpisodeScraper.class);
